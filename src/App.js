@@ -23,10 +23,12 @@ class App extends Component {
       <Provider store={GameStore}>
         <div className="App">
           <div class="main">
-            {GameStore.spaces.map(( card, index ) =>
-                <Column columnIndex={index}>
-                  { card ? (<Card/>) : ''}
-                </Column>
+            {GameStore.columns.map(( cards, index ) =>
+              <Column columnIndex={index}>
+                {cards.map(( card, index ) =>
+                  <Card card={card}/>
+                )}
+              </Column>
             )}
           </div>
         </div>

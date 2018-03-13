@@ -5,7 +5,6 @@ import { DropTarget } from 'react-dnd';
 class Column extends Component {
   render() {
     const { children, store, columnIndex, connectDropTarget, isOver } = this.props;
-    console.log("isOver: ", isOver);
     var overClass = (isOver ? "column dropHere" : "column");
     return connectDropTarget(
       <div class={overClass}>
@@ -15,10 +14,6 @@ class Column extends Component {
     )
   }
 }
-
-// injects the store into the above class
-// no longer needed, I think
-// Column = inject('store')(observer(Column))
 
 // to be sent to React DND
 const columnTarget = {
