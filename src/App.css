@@ -1,0 +1,22 @@
+html {
+  background-color: #076324;
+}
+
+.card img {
+  width: 100px;
+}
+
+.column {
+  width: 98px;
+  height: 143px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+}
+
+.main {
+  display: flex;
+}
+
+.dropHere {
+  background-color: gray;
+}
