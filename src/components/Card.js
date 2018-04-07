@@ -3,9 +3,19 @@ import { DragSource } from 'react-dnd';
 
 class Card extends Component {
   render() {
-    const { connectDragSource, isDragging, card } = this.props;
+    const { connectDragSource, isDragging, card, columnIndex, rowIndex, columnCardCount } = this.props;
+
+    // styles to fan card stack and allow drag preview to show all cards being dragged
+    const top = (rowIndex * 30) + 'px';
+    const height = ((columnCardCount - 1 - rowIndex) * 30) + 150 + 'px';
+
+    const cardStyles = {
+      top: top,
+      height: height,
+    };
+
     return connectDragSource(
-      <div class="card">
+      <div className="card"  style={cardStyles}>
         <img src={card.image}/>
       </div>
     )
@@ -14,9 +24,11 @@ class Card extends Component {
 
 // to be sent to React DND
 const cardSource = {
-  beginDrag(props) {
-    console.log(props);
-    return {"card": props.card};
+  beginDrag(props, monitor, component) {
+    // console.log("card.js component: ", component);
+    // console.log("card.js props: ", props);
+    // console.log("key: ", props.key);
+    return {"card": props.card, "columnIndex": props.columnIndex, "rowIndex": props.rowIndex};
   }
 };
 
@@ -29,11 +41,3 @@ function collect(connect, monitor) {
 }
 
 export default DragSource('card', cardSource, collect)(Card);
-
-
-// Knight.propTypes = {
-//   connectDragSource: PropTypes.func.isRequired,
-//   isDragging: PropTypes.bool.isRequired
-// };
-
-// export default DragSource(ItemTypes.KNIGHT, knightSource, collect)(Knight);
