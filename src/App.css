@@ -2,6 +2,10 @@ html {
   background-color: #076324;
 }
 
+.card {
+  position: absolute;
+}
+
 .card img {
   width: 100px;
 }
@@ -19,4 +23,8 @@ html {
 
 .dropHere {
   background-color: gray;
+}
+
+.freeCells {
+  
 }

@@ -7,7 +7,7 @@ class Column extends Component {
     const { children, store, columnIndex, connectDropTarget, isOver } = this.props;
     var overClass = (isOver ? "column dropHere" : "column");
     return connectDropTarget(
-      <div class={overClass}>
+      <div className={overClass}>
         {children}
       </div>
 
@@ -15,11 +15,16 @@ class Column extends Component {
   }
 }
 
+// monitor.getItem() pulls in what was return by beginDrag
 // to be sent to React DND
 const columnTarget = {
-  drop(props) {
-    console.log('WTF', props);
-    props.store.moveCard(props.columnIndex);
+  drop(props, monitor, component) {
+    const droppedItem = monitor.getItem();
+    // console.log('WTF props', props);
+    // console.log("WTF monitor: ", monitor);
+    // console.log("WTF component: ", component);
+    // console.log("get item: ", monitor.getItem());
+    props.store.moveCards(droppedItem.card, droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
   }
 };
 
