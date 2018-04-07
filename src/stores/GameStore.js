@@ -17,7 +17,7 @@ class GameStore {
         // deck.slice(40, 46),
         // deck.slice(46, 52)
       ],
-      freeCells: [[], [], [], []],
+      freeCells: [null, null, null, null],
       playedCards: [[], [], [], []],
       setSpaces: action(function() {
         // console.log('setSpaces triggered')
@@ -33,6 +33,13 @@ class GameStore {
         // move cards if the action is valid
         if (moveValid) {
           this.columns[dropColumnIndex] = [...destinationCards, ...movingCards]
+          this.columns[dragColumnIndex].splice(dragRowIndex, dragCardCount);
+        }
+      }),
+      placeCardInFreeCell: action(function(card, dragColumnIndex, dragRowIndex, freeCellIndex) {
+        let dragCardCount = this.columns[dragColumnIndex].length - dragRowIndex;
+        if (dragCardCount == 1 && !this.freeCells[freeCellIndex]) {
+          this.freeCells[freeCellIndex] = card;
           this.columns[dragColumnIndex].splice(dragRowIndex, dragCardCount);
         }
       }),

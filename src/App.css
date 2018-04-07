@@ -26,5 +26,6 @@ html {
 }
 
 .freeCells {
-  
+  display: flex;
+  height: 170px;
 }
