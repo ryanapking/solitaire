@@ -6,7 +6,7 @@ class Card extends Component {
     const { connectDragSource, isDragging, card, columnIndex, rowIndex, columnCardCount } = this.props;
 
     // styles to fan card stack and allow drag preview to show all cards being dragged
-    const top = (rowIndex * 30) + 'px';
+    const top = (rowIndex * 30) + 170 + 'px';
     const height = ((columnCardCount - 1 - rowIndex) * 30) + 150 + 'px';
 
     const cardStyles = {

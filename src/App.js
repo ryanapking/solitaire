@@ -6,7 +6,8 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import './App.css';
 
 import Card from './components/Card';
-import Column from './components/Column'
+import Column from './components/Column';
+import FreeCell from './components/FreeCell';
 
 import GameStore from './stores/GameStore'
 
@@ -16,7 +17,9 @@ class App extends Component {
       <Provider store={GameStore}>
         <div className="App">
           <div className = "freeCells">
-
+            {GameStore.freeCells.map(( card, columnIndex ) =>
+              <FreeCell columnIndex={columnIndex} key={columnIndex} card={card}/>
+            )}
           </div>
           <div className="main">
             {GameStore.columns.map(( cards, columnIndex ) =>
