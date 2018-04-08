@@ -29,7 +29,7 @@ const columnTarget = {
     console.log("WTF monitor: ", monitor);
     console.log("WTF component: ", component);
     console.log("get item: ", monitor.getItem());
-    props.store.placeCardInFreeCell(droppedItem.card, droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
+    props.store.moveToFreeCell(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
   }
 };
 

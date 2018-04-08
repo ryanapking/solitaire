@@ -24,7 +24,7 @@ const columnTarget = {
     // console.log("WTF monitor: ", monitor);
     // console.log("WTF component: ", component);
     // console.log("get item: ", monitor.getItem());
-    props.store.moveCards(droppedItem.card, droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
+    props.store.moveStack(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
   }
 };
 

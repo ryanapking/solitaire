@@ -1,58 +1,101 @@
 import { extendObservable, action, reaction } from 'mobx';
 
-import deck from './CardDeck';
+import hand from './gameHand';
 
 class GameStore {
   constructor() {
     extendObservable(this, {
-      columns: [
-        [], [], deck.slice(0, 2), deck.slice(2,4),
-        [], deck.slice(6,8), deck.slice(4, 6), []
-        // deck.slice(0, 7),
-        // deck.slice(7, 14),
-        // deck.slice(14, 21),
-        // deck.slice(21, 28),
-        // deck.slice(28, 34),
-        // deck.slice(34, 40),
-        // deck.slice(40, 46),
-        // deck.slice(46, 52)
-      ],
-      freeCells: [null, null, null, null],
-      playedCards: [[], [], [], []],
-      setSpaces: action(function() {
-        // console.log('setSpaces triggered')
-        this.spaces = [1, 0, 0, 0, 0, 0, 0, 0]
+      // used to draw the board
+      columns: hand.columns,
+      freeCells: hand.freeCells,
+      playedCards: hand.playedCards,
+
+
+      // cannot currently move from freecell to freecell
+      // maybe disallow this in the front end
+
+      // used to manipulate the above values
+      moveToFreeCell: action(function(cardColumn, cardRow, freeCellColumn) {
+        // cell must be empty
+        let cellEmpty = !this.freeCells[freeCellColumn];
+        // must only be moving one card
+        let oneCard = (this.columns[cardColumn].length - cardRow) > 1 ? false : true;
+        if ( cellEmpty && oneCard ) {
+          this.freeCells[freeCellColumn] = this.columns[cardColumn][cardRow];
+          this.columns[cardColumn] = this.columns[cardColumn].filter((card, index) => index < cardRow);
+        }
       }),
-      moveCards: action(function(card, dragColumnIndex, dragRowIndex, dropColumnIndex) {
+
+      moveFromFreeCell: action(function(freeCellColumn, destinationColumn) {
+        // destination cell must create a valid stack
+        let freeCellCard = this.freeCells[freeCellColumn];
+        let destinationCard = [this.getTopCard(this.columns[destinationColumn])];
+        let stackValid = this.checkCardStack([...destinationCard, freeCellCard]);
+        if (stackValid) {
+          this.columns[destinationColumn] = [...this.columns[destinationColumn], freeCellCard];
+          this.freeCells[freeCellColumn] = null;
+        }
+      }),
+
+      moveStack: action(function(moveStackColumn, moveStackRow, destinationColumn) {
         // get needed card info
-        let dragCardCount = this.columns[dragColumnIndex].length - dragRowIndex;
-        let movingCards = this.columns[dragColumnIndex].slice(dragRowIndex, dragRowIndex + dragCardCount);
-        let destinationCards = this.columns[dropColumnIndex];
+        let movingCardStack = this.columns[moveStackColumn].filter((card, index) => index >= moveStackRow);
+        let destinationCard = [this.getTopCard(this.columns[destinationColumn])];
+
+        // add check to confirm number of cards moving
+
         // check move validity
-        let moveValid = this.checkMove(movingCards, destinationCards);
+        let stackValid = this.checkCardStack([...destinationCard, ...movingCardStack]);
         // move cards if the action is valid
-        if (moveValid) {
-          this.columns[dropColumnIndex] = [...destinationCards, ...movingCards]
-          this.columns[dragColumnIndex].splice(dragRowIndex, dragCardCount);
+        if (stackValid) {
+          this.columns[destinationColumn] = [...this.columns[destinationColumn], ...movingCardStack]
+          this.columns[moveStackColumn] = this.columns[moveStackColumn].filter((card, index) => index < moveStackRow);
         }
       }),
-      placeCardInFreeCell: action(function(card, dragColumnIndex, dragRowIndex, freeCellIndex) {
-        let dragCardCount = this.columns[dragColumnIndex].length - dragRowIndex;
-        if (dragCardCount == 1 && !this.freeCells[freeCellIndex]) {
-          this.freeCells[freeCellIndex] = card;
-          this.columns[dragColumnIndex].splice(dragRowIndex, dragCardCount);
+
+      playCardFromStack: action(function(cardColumn, cardRow, playedCardsColumn) {
+        // card must not be buried
+        let cardMoveable = ( cardRow == this.columns[cardColumn].length-1);
+        // destination column must create a valid play
+        let topPlayedCard = [this.getTopCard(this.playedCards[playedCardsColumn])];
+        let card = this.columns[cardColumn][cardRow];
+        let stackValid = this.checkPlayStack([...topPlayedCard, card])
+
+        if (cardMoveable && stackValid) {
+          this.playedCards[playedCardsColumn] = [...this.playedCards[playedCardsColumn], card];
+          this.columns[cardColumn] = this.columns[cardColumn].filter((card, index) => index < cardRow);
         }
       }),
-      checkMove: function(movingCards, destinationCards) {
-        // check that there are enough freecells to move the cards
-        if (movingCards.length > this.calculateMaxMoveableCards()) {
-          return false;
+
+      playCardFromFreeCell: action(function(freeCellColumn, playedCardsColumn) {
+        let topPlayedCard = [this.getTopCard(this.playedCards[playedCardsColumn])];
+        let card = this.freeCells[freeCellColumn];
+        let stackValid = this.checkPlayStack([...topPlayedCard, card])
+
+        if (stackValid) {
+          this.playedCards[playedCardsColumn] = [...this.playedCards[playedCardsColumn], card];
+          this.freeCells[freeCellColumn] = null;
         }
-        // check that the proposed stack of cards is a valid one
-        let potentialStack = [destinationCards[destinationCards.length-1], ...movingCards];
-        let stackValidity =  this.checkCardStack(potentialStack);
-        // return
-        return stackValidity;
+      }),
+
+
+
+      // helper functions
+      getTopCard: function(stack) {
+        // returns the top element of an array
+        return stack[stack.length-1];
+      },
+      checkPlayStack: function(stack) {
+        // checks if this is the first card played, and if it's an ace
+        if ( stack.length == 1 && stack[0].value == 1 ) {
+          return true;
+        }
+        // confirms that cards are of same suit and the cards are incrementing by one
+        if (stack[0].suit == stack[1].suit && stack[0].value - stack[1].value == 1) {
+          return true;
+        }
+        return false;
+
       },
       checkCardStack: function(stack) {
         // confirm that card values are decrementing by one and that colors are alternating
@@ -68,15 +111,16 @@ class GameStore {
         return moveValidity;
       },
       countEmptyColumns: function() {
-        // find the number of empty columns -- and later free cells
         let emptyColumnCounter = (accumulator, currentColumn) => currentColumn.length == 0 ? ++accumulator : accumulator;
         return this.columns.reduce(emptyColumnCounter, 0);
       },
       countEmptyCells: function() {
-
+        let emptyCellCounter = (accumulator, currentCell) => currentCell == null ? ++accumulator : accumulator;
+        return this.freeCells.reduce(emptyCellCounter, 0);
       },
       calculateMaxMoveableCards: function() {
-        return this.countEmptyColumns() + 1;
+        // make sure not to count the column that cards are being moved into as being free
+        let freeCellMove = this.countEmptyColumns() + 1;
       }
     })
   }
