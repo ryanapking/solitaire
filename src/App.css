@@ -29,3 +29,12 @@ html {
   display: flex;
   height: 170px;
 }
+
+.playedCards {
+  display: flex;
+  height: 170px;
+}
+
+.top {
+  display: flex;
+}

@@ -4,16 +4,15 @@ import { DropTarget } from 'react-dnd';
 
 import Card from './Card';
 
-class FreeCell extends Component {
+class PlayedCards extends Component {
   render() {
-    const { children, store, columnIndex, connectDropTarget, isOver } = this.props;
+    const { children, store, columnIndex, connectDropTarget, isOver, source } = this.props;
     var overClass = (isOver ? "column dropHere" : "column");
     return connectDropTarget(
       <div className={overClass}>
-        {this.props.card
-          ? <Card card={this.props.card} columnIndex={columnIndex} source="freeCell"/>
-          : null
-        }
+        {this.props.cards.map((card, index) =>
+          <Card card={card} columnIndex={columnIndex} source={source}/>
+        )}
       </div>
 
     )
@@ -29,9 +28,7 @@ const columnTarget = {
     // console.log("WTF monitor: ", monitor);
     // console.log("WTF component: ", component);
     // console.log("get item: ", monitor.getItem());
-    if (droppedItem.source != "freeCell") {
-      props.store.moveToFreeCell(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
-    }
+    props.store.playCardFromStack(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
   }
 };
 
@@ -43,4 +40,4 @@ function collect(connect, monitor) {
   };
 }
 
-export default inject('store')(DropTarget('card', columnTarget, collect)(FreeCell));
+export default inject('store')(DropTarget('card', columnTarget, collect)(PlayedCards));
