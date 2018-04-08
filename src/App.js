@@ -8,24 +8,33 @@ import './App.css';
 import Card from './components/Card';
 import Column from './components/Column';
 import FreeCell from './components/FreeCell';
+import PlayedCards from './components/PlayedCards';
 
 import GameStore from './stores/GameStore'
 
 class App extends Component {
   render() {
+    let columnSource = "column";
     return (
       <Provider store={GameStore}>
         <div className="App">
-          <div className = "freeCells">
-            {GameStore.freeCells.map(( card, columnIndex ) =>
-              <FreeCell columnIndex={columnIndex} key={columnIndex} card={card}/>
-            )}
+          <div className="top">
+            <div className = "freeCells">
+              {GameStore.freeCells.map(( card, columnIndex ) =>
+                <FreeCell columnIndex={columnIndex} key={columnIndex} card={card}/>
+              )}
+            </div>
+            <div className = "playedCards">
+              {GameStore.playedCards.map(( cards, columnIndex ) =>
+                <PlayedCards columnIndex={columnIndex} key={columnIndex} cards={cards}/>
+              )}
+            </div>
           </div>
           <div className="main">
             {GameStore.columns.map(( cards, columnIndex ) =>
               <Column columnIndex={columnIndex} key={columnIndex}>
                 {cards.map(( card, index ) =>
-                  <Card card={card} rowIndex={index} key={index} columnIndex={columnIndex} columnCardCount={cards.length}/>
+                  <Card card={card} rowIndex={index} key={index} columnIndex={columnIndex} columnCardCount={cards.length} source={columnSource}/>
                 )}
               </Column>
             )}

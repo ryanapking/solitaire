@@ -24,7 +24,11 @@ const columnTarget = {
     // console.log("WTF monitor: ", monitor);
     // console.log("WTF component: ", component);
     // console.log("get item: ", monitor.getItem());
-    props.store.moveStack(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
+    if (droppedItem.source == "column") {
+      props.store.moveStack(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
+    } else if (droppedItem.source == "freeCell") {
+      props.store.moveFromFreeCell(droppedItem.columnIndex, props.columnIndex);
+    }
   }
 };
 

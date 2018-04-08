@@ -28,7 +28,7 @@ const cardSource = {
     // console.log("card.js component: ", component);
     // console.log("card.js props: ", props);
     // console.log("key: ", props.key);
-    return {"card": props.card, "columnIndex": props.columnIndex, "rowIndex": props.rowIndex};
+    return {"card": props.card, "columnIndex": props.columnIndex, "rowIndex": props.rowIndex, "source": props.source};
   }
 };
 
