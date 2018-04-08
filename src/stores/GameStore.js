@@ -46,13 +46,15 @@ class GameStore {
         // get needed card info
         let movingCardStack = this.columns[moveStackColumn].filter((card, index) => index >= moveStackRow);
         let destinationCard = this.getTopCard(this.columns[destinationColumn]);
+        // check move validity
 
         // add check to confirm number of cards moving
+        let maxMoveableCards = this.calculateMaxMoveableCards();
+        let stackMoveable = movingCardStack.length <= maxMoveableCards;
 
-        // check move validity
         let stackValid = this.checkCardStack([...destinationCard, ...movingCardStack]);
         // move cards if the action is valid
-        if (stackValid) {
+        if (stackMoveable && stackValid) {
           this.columns[destinationColumn] = [...this.columns[destinationColumn], ...movingCardStack]
           this.columns[moveStackColumn] = this.columns[moveStackColumn].filter((card, index) => index < moveStackRow);
           this.autoPlay();
@@ -92,6 +94,8 @@ class GameStore {
           return false;
         }
       }),
+
+
 
 
 
@@ -140,8 +144,13 @@ class GameStore {
       },
       calculateMaxMoveableCards: function() {
         // make sure not to count the column that cards are being moved into as being free
-        let freeCellMove = this.countEmptyColumns() + 1;
+        let freeCellMaxMoves = this.countEmptyCells() + 1;
+        return freeCellMaxMoves;
       },
+
+
+
+
 
       // Autoplay functions
       // currently plays ALL playable cards
@@ -163,7 +172,15 @@ class GameStore {
           }
         }
       },
+      calculateHighestCheck: function() {
+        // find lowest played red and black cards
+        // add one, and that's the highest card of the opposite color to try to autoplay
+        return {red: 1, black: 1};
+      },
       checkIfCardCanPlayFromStack(cardColumn, cardRow) {
+        if ( cardColumn < 0 || cardRow < 0) {
+          return false;
+        }
         for(var i = 0; i < 4; i++) {
           if (this.playCardFromStack(cardColumn, cardRow, i)) {
             break;
