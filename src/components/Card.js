@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { inject, observable, observer } from 'mobx-react';
 import { DragSource } from 'react-dnd';
 
 class Card extends Component {
@@ -28,6 +29,12 @@ const cardSource = {
     // console.log("card.js component: ", component);
     // console.log("card.js props: ", props);
     // console.log("key: ", props.key);
+    console.log("beginning drag");
+    props.store.grabCards({
+      columnType: props.columnType,
+      column: props.columnIndex,
+      row: props.rowIndex
+    })
     return {"card": props.card, "columnIndex": props.columnIndex, "rowIndex": props.rowIndex, "source": props.source};
   }
 };
@@ -40,4 +47,4 @@ function collect(connect, monitor) {
   }
 }
 
-export default DragSource('card', cardSource, collect)(Card);
+export default inject('store')(DragSource('card', cardSource, collect)(Card));

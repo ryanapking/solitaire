@@ -9,97 +9,205 @@ class GameStore {
       columns: hand.columns,
       freeCells: hand.freeCells,
       playedCards: hand.playedCards,
+      grabber: null,
 
+      // validates a drop, then takes needed actions if it's a valid move. Called by react drag and drop
+      dropCards: action(function(dropData) {
+        console.log("drop request: ", dropData);
+        // useless assignments to help me know what's going on
+        let columnType = dropData.columnType;
+        let column = dropData.column;
 
-      // cannot currently move from freecell to freecell
-      // maybe disallow this in the front end
+        // check drop validity
+        let dropValid = this.validateDrop(dropData);
 
-      // used to manipulate the above values
-      moveToFreeCell: action(function(cardColumn, cardRow, freeCellColumn) {
-        console.log("moveToFreeCell called. Params: ", cardColumn, cardRow, freeCellColumn)
-        // cell must be empty
-        let cellEmpty = !this.freeCells[freeCellColumn];
-        // must only be moving one card
-        let oneCard = (this.columns[cardColumn].length - cardRow) > 1 ? false : true;
-        if ( cellEmpty && oneCard ) {
-          this.freeCells[freeCellColumn] = this.columns[cardColumn][cardRow];
-          this.columns[cardColumn] = this.columns[cardColumn].filter((card, index) => index < cardRow);
+        // move cards if drop valid
+        if (dropValid) {
+          // place cards
+          console.log("placing dropped cards");
+          this.placeCards({
+            columnType: dropData.columnType,
+            column: dropData.column
+          });
+
+          // remove cards
+          console.log("removing dropped cards");
+          this.removeCards({
+            columnType: this.grabber.requestData.columnType,
+            column: this.grabber.requestData.column,
+            row: this.grabber.requestData.row
+          });
+
           this.autoPlay();
         }
+
+        // clear grabber
+        console.log("clearing grabber");
+        this.grabber = null;
+
+        return dropValid;
       }),
 
-      moveFromFreeCell: action(function(freeCellColumn, destinationColumn) {
-        console.log("moveFromFreeCell called. Params: ", freeCellColumn, destinationColumn);
-        // destination cell must create a valid stack
-        let freeCellCard = this.freeCells[freeCellColumn];
-        let destinationCard = this.getTopCard(this.columns[destinationColumn]);
-        let stackValid = this.checkCardStack([...destinationCard, freeCellCard]);
-        if (stackValid) {
-          this.columns[destinationColumn] = [...this.columns[destinationColumn], freeCellCard];
-          this.freeCells[freeCellColumn] = null;
-          this.autoPlay();
+      // puts cards into the grabber (card remain in both places)
+      grabCards: action(function(grabData) {
+        console.log("grab request: ", grabData);
+        // useless assignments to help me know what's going on
+        let columnType = grabData.columnType;
+        let column = grabData.column;
+        let row = grabData.row;
+
+        let response = {
+          // we ASSUME success...
+          success: 1,
+          message: "Grab success. Probably.",
+          requestData: grabData,
+          cards: []
         }
-      }),
 
-      moveStack: action(function(moveStackColumn, moveStackRow, destinationColumn) {
-        console.log("moveStack called. Params: ", moveStackColumn, moveStackRow, destinationColumn);
-        // get needed card info
-        let movingCardStack = this.columns[moveStackColumn].filter((card, index) => index >= moveStackRow);
-        let destinationCard = this.getTopCard(this.columns[destinationColumn]);
-        // check move validity
-
-        // add check to confirm number of cards moving
-        let maxMoveableCards = this.calculateMaxMoveableCards();
-        let stackMoveable = movingCardStack.length <= maxMoveableCards;
-
-        let stackValid = this.checkCardStack([...destinationCard, ...movingCardStack]);
-        // move cards if the action is valid
-        if (stackMoveable && stackValid) {
-          this.columns[destinationColumn] = [...this.columns[destinationColumn], ...movingCardStack]
-          this.columns[moveStackColumn] = this.columns[moveStackColumn].filter((card, index) => index < moveStackRow);
-          this.autoPlay();
+        switch(columnType) {
+          case "column": {
+            response.cards = this.columns[column].filter((card, index) => index >= row);
+            break;
+          }
+          case "freeCell": {
+            response.cards = [this.freeCells[column]];
+            break;
+          }
+          default: {
+            response.message = "Grab error. Was your grab request valid?!? Read the documentation!";
+            response.success = 0;
+            break;
+          }
         }
+
+        this.grabber = response;
+        console.log("grabber status: ", this.grabber);
+        return response;
       }),
 
-      playCardFromStack: action(function(cardColumn, cardRow, playedCardsColumn) {
-        console.log("playCardFromStack called. Params: ", cardColumn, cardRow, playedCardsColumn);
-        // card must not be buried
-        let cardMoveable = ( cardRow == this.columns[cardColumn].length-1 );
-        // destination column must create a valid play
-        let topPlayedCard = this.getTopCard(this.playedCards[playedCardsColumn]);
-        let card = this.columns[cardColumn][cardRow];
-        let stackValid = this.checkPlayStack([...topPlayedCard, card])
+      // places cards from the grabber onto a column (cards remain in grabber and are not deleted from origin column)
+      placeCards: action(function(placeData) {
+        console.log("place request: ", placeData);
+        // useless assignments to help me know what's going on
+        let columnType = placeData.columnType;
+        let column = placeData.column;
 
-        if (cardMoveable && stackValid) {
-          this.playedCards[playedCardsColumn] = [...this.playedCards[playedCardsColumn], card];
-          this.columns[cardColumn] = this.columns[cardColumn].filter((card, index) => index < cardRow);
-          this.autoPlay();
-          return true;
-        } else {
-          return false
+        let response = {
+          success: 1, // we ASSUME success...
+          message: "Place success. Probably.",
+          requestData: placeData
         }
-      }),
 
-      playCardFromFreeCell: action(function(freeCellColumn, playedCardsColumn) {
-        let topPlayedCard = this.getTopCard(this.playedCards[playedCardsColumn]);
-        let card = this.freeCells[freeCellColumn];
-        let stackValid = this.checkPlayStack([...topPlayedCard, card])
-
-        if (stackValid) {
-          this.playedCards[playedCardsColumn] = [...this.playedCards[playedCardsColumn], card];
-          this.freeCells[freeCellColumn] = null;
-          this.autoPlay();
-          return true;
-        } else {
-          return false;
+        console.log("placing cards");
+        switch(columnType) {
+          case "column": {
+            this.columns[column] = [...this.columns[column], ...this.grabber.cards];
+            break;
+          }
+          case "freeCell": {
+            this.freeCells[column] = this.grabber.cards[0];
+            break;
+          }
+          case "played": {
+            this.playedCards[column] = [...this.playedCards[column], ...this.grabber.cards];
+            break;
+          }
+          default: {
+            response.message = "Place error. Was your place request valid?!? Read the documentation!";
+            response.success = 0;
+            break;
+          }
         }
+
+        console.log("placement response: ", response);
+        return response;
       }),
 
+      // removes cards from a column
+      removeCards: action(function(removeData) {
+        // useless assignments to help me know what's going on
+        let columnType = removeData.columnType;
+        let column = removeData.column;
+        let row = removeData.row;
 
+        let response = {
+          success: 1, // we ASSUME success...
+          message: "Remove success. Probably.",
+          requestData: removeData
+        };
 
+        switch(columnType) {
+          case "column": {
+            this.columns[column] = this.columns[column].filter((card, index) => index < row);
+            break;
+          }
+          case "freeCell": {
+            this.freeCells[column] = null;
+            break;
+          }
+          case "played": {
+            this.playedCards[column] = this.playedCards[column].filter((card, index) => index < row);
+            break;
+          }
+          default: {
+            response.message = "Remove card error. Was your remove request valid?!? Read the documentation!";
+            response.success = 0;
+            break;
+          }
+        }
 
+        console.log("remove response: ", response);
+        return response;
+      }),
+
+      // will be for future game... requests done programmatically
+      moveCards: action(function(moveData) {
+        // does the whole damn thing, for future game purposes
+      }),
 
       // helper functions
+      validateDrop: function(dropData) {
+        // confirms that a drop meets the freecells rules
+        console.log("drop request: ", dropData);
+        // useless assignments to help me know what's going on
+        let columnType = dropData.columnType;
+        let column = dropData.column;
+
+        // check if stack is too big
+        let maxMoveableCards = this.calculateMaxMoveableCards(column);
+        if (this.grabber.cards.length > maxMoveableCards) {
+          console.log("card stack too big to move");
+          return false;
+        }
+
+        switch(columnType) {
+          case "column": {
+            let dropTopCard = this.getTopCard(this.columns[column]);
+            let proposedStack = [...dropTopCard, ...this.grabber.cards];
+            let validStack = this.checkCardStack(proposedStack);
+            if (validStack) {return true} else return false;
+            break;
+          }
+          case "freeCell": {
+            let cellEmpty = this.freeCells[column] == null;
+            let oneCard = this.grabber.cards.length == 1;
+            if (cellEmpty && oneCard) {return true} else return false;
+            break;
+          }
+          case "played": {
+            let dropTopCard = this.getTopCard(this.playedCards[column]);
+            let proposedStack = [...dropTopCard, ...this.grabber.cards];
+            let validStack = this.checkPlayStack(proposedStack);
+            if (validStack) {return true} else return false;
+            break;
+          }
+          default: {
+            return false;
+            break;
+          }
+        }
+      },
+
       getTopCard: function(stack) {
         // returns the top element of an array
         if (stack.length > 0) {
@@ -107,6 +215,7 @@ class GameStore {
         }
           return [];
       },
+
       checkPlayStack: function(stack) {
         // checks if this is the first card played, and if it's an ace
         if ( stack.length == 1 ) {
@@ -119,8 +228,8 @@ class GameStore {
         } else {
           return false;
         }
-
       },
+
       checkCardStack: function(stack) {
         // confirm that card values are decrementing by one and that colors are alternating
         // shit is ugly right now
@@ -134,68 +243,75 @@ class GameStore {
         })
         return moveValidity;
       },
-      countEmptyColumns: function() {
-        let emptyColumnCounter = (accumulator, currentColumn) => currentColumn.length == 0 ? ++accumulator : accumulator;
+
+      countEmptyColumns: function(ignoreColumn = null) {
+        let emptyColumnCounter = (accumulator, currentColumn, index) => (currentColumn.length == 0 && index != ignoreColumn) ? ++accumulator : accumulator;
         return this.columns.reduce(emptyColumnCounter, 0);
       },
+
       countEmptyCells: function() {
         let emptyCellCounter = (accumulator, currentCell) => currentCell == null ? ++accumulator : accumulator;
         return this.freeCells.reduce(emptyCellCounter, 0);
       },
-      calculateMaxMoveableCards: function() {
-        // make sure not to count the column that cards are being moved into as being free
-        let freeCellMaxMoves = this.countEmptyCells() + 1;
-        return freeCellMaxMoves;
+
+      calculateMaxMoveableCards: function(destinationColumn = null) {
+        let emptyFreeCellCount = this.countEmptyCells();
+        let emptyColumnCount = this.countEmptyColumns(destinationColumn);
+        let maxMoveableCards = (emptyFreeCellCount + 1) + ((emptyFreeCellCount + 1) * emptyColumnCount);
+        console.log("max moveable cards: ", maxMoveableCards);
+        return maxMoveableCards;
       },
-
-
-
-
 
       // Autoplay functions
       // currently plays ALL playable cards
-      autoPlay: function() {
+      autoPlay: action(function() {
         console.log("autoplaying");
-        let checkColumn = 0;
-        let checkFreeCell = 0;
-        while(checkColumn < 8 || checkFreeCell < 4) {
-          if (checkFreeCell < 4) {
-            this.checkIfCardCanPlayFromFreeCell(checkFreeCell);
-            checkFreeCell++;
-          } else if (checkColumn < 8) {
-            let checkRow = this.columns[checkColumn].length-1;
-            this.checkIfCardCanPlayFromStack(checkColumn, checkRow);
-            checkColumn++;
-          } else {
-            checkColumn++;
-            checkFreeCell++
-          }
-        }
-      },
-      calculateHighestCheck: function() {
-        // find lowest played red and black cards
-        // add one, and that's the highest card of the opposite color to try to autoplay
-        return {red: 1, black: 1};
-      },
-      checkIfCardCanPlayFromStack(cardColumn, cardRow) {
-        if ( cardColumn < 0 || cardRow < 0) {
-          return false;
-        }
-        for(var i = 0; i < 4; i++) {
-          if (this.playCardFromStack(cardColumn, cardRow, i)) {
-            break;
-          }
-        }
-      },
-      checkIfCardCanPlayFromFreeCell(freeCellColumn) {
-        if (!this.freeCells[freeCellColumn]) return;
-        for(var i = 0; i < 4; i++) {
-          if (this.playCardFromFreeCell(freeCellColumn, i)) {
-            break;
-          }
-        }
-      }
 
+        // check freecells for playable cards
+        for (var i = 0; i < 4; i++) {
+          if (this.freeCells[i]) {
+            for (var j = 0; j < 4; j++) {
+              let dropTopCard = this.getTopCard(this.playedCards[j]);
+              let proposedStack = [...dropTopCard, this.freeCells[i]].filter((card) => card.constructor.name == "Card");
+              if (this.checkPlayStack(proposedStack)) {
+                this.grabCards({
+                  columnType: "freeCell",
+                  column: i
+                });
+                this.dropCards({
+                  columnType: "played",
+                  column: j
+                });
+                i = j = 5;
+              }
+            }
+          }
+        }
+
+        // check main columns for playable cards
+        for (var i = 0; i < 8; i++) {
+          if (this.columns[i].length > 0) {
+            for (var j = 0; j < 4; j++) {
+              let dropTopCard = this.getTopCard(this.playedCards[j]);
+              let playCard = this.getTopCard(this.columns[i]);
+              let proposedStack = [...dropTopCard, ...playCard].filter((card) => card.constructor.name == "Card");
+              if (this.checkPlayStack(proposedStack)) {
+                this.grabCards({
+                  columnType: "column",
+                  column: i,
+                  row: this.columns[i].length-1
+                });
+                this.dropCards({
+                  columnType: "played",
+                  column: j
+                });
+                i = j = 9;
+              }
+            }
+          }
+        }
+
+      }),
     })
   }
 }

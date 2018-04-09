@@ -34,7 +34,7 @@ class App extends Component {
             {GameStore.columns.map(( cards, columnIndex ) =>
               <Column columnIndex={columnIndex} key={columnIndex}>
                 {cards.map(( card, index ) =>
-                  <Card card={card} rowIndex={index} key={index} columnIndex={columnIndex} columnCardCount={cards.length} source={columnSource}/>
+                  <Card card={card} rowIndex={index} key={index} columnIndex={columnIndex} columnCardCount={cards.length} source={columnSource} columnType="column"/>
                 )}
               </Column>
             )}

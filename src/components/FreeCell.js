@@ -11,7 +11,7 @@ class FreeCell extends Component {
     return connectDropTarget(
       <div className={overClass}>
         {this.props.card
-          ? <Card card={this.props.card} columnIndex={columnIndex} source="freeCell"/>
+          ? <Card card={this.props.card} columnIndex={columnIndex} columnType="freeCell"/>
           : null
         }
       </div>
@@ -29,8 +29,12 @@ const columnTarget = {
     // console.log("WTF monitor: ", monitor);
     // console.log("WTF component: ", component);
     // console.log("get item: ", monitor.getItem());
+    props.store.dropCards({
+      columnType: "freeCell",
+      column: props.columnIndex
+    })
     if (droppedItem.source != "freeCell") {
-      props.store.moveToFreeCell(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
+      // props.store.moveToFreeCell(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
     }
   }
 };
