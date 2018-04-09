@@ -11,7 +11,7 @@ class PlayedCards extends Component {
     return connectDropTarget(
       <div className={overClass}>
         {this.props.cards.map((card, index) =>
-          <Card card={card} columnIndex={columnIndex} source={source}/>
+          <Card card={card} columnIndex={columnIndex} source={source} columnType="played"/>
         )}
       </div>
 
@@ -28,7 +28,11 @@ const columnTarget = {
     // console.log("WTF monitor: ", monitor);
     // console.log("WTF component: ", component);
     // console.log("get item: ", monitor.getItem());
-    props.store.playCardFromStack(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
+    props.store.dropCards({
+      columnType: "played",
+      column: props.columnIndex
+    });
+    // props.store.playCardFromStack(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
   }
 };
 

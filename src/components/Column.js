@@ -24,10 +24,14 @@ const columnTarget = {
     // console.log("WTF monitor: ", monitor);
     // console.log("WTF component: ", component);
     // console.log("get item: ", monitor.getItem());
+    props.store.dropCards({
+      columnType: "column",
+      column: props.columnIndex
+    })
     if (droppedItem.source == "column") {
-      props.store.moveStack(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
+      // props.store.moveStack(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
     } else if (droppedItem.source == "freeCell") {
-      props.store.moveFromFreeCell(droppedItem.columnIndex, props.columnIndex);
+      // props.store.moveFromFreeCell(droppedItem.columnIndex, props.columnIndex);
     }
   }
 };
