@@ -1,16 +1,22 @@
 import React, { Component } from 'react'
-import { inject, observable, observer } from 'mobx-react'
+import { inject } from 'mobx-react'
 import { DropTarget } from 'react-dnd';
+
+import Card from './Card';
 
 class Column extends Component {
   render() {
-    const { children, store, columnIndex, connectDropTarget, isOver } = this.props;
-    var overClass = (isOver ? "column dropHere" : "column");
+    const { store, columnIndex, connectDropTarget, isOver, cards } = this.props;
+    let overClass = "column";
+    if (isOver && store.grabber && store.validateDrop({columnType: "column", column: columnIndex})) {
+      overClass += " dropHere";
+    }
     return connectDropTarget(
       <div className={overClass}>
-        {children}
+        {cards.map((card, index) =>
+          <Card key={index} card={card} rowIndex={index} columnIndex={columnIndex} columnCardCount={cards.length} columnType="column"/>
+        )}
       </div>
-
     )
   }
 }
@@ -19,20 +25,10 @@ class Column extends Component {
 // to be sent to React DND
 const columnTarget = {
   drop(props, monitor, component) {
-    const droppedItem = monitor.getItem();
-    // console.log('WTF props', props);
-    // console.log("WTF monitor: ", monitor);
-    // console.log("WTF component: ", component);
-    // console.log("get item: ", monitor.getItem());
     props.store.dropCards({
       columnType: "column",
       column: props.columnIndex
     })
-    if (droppedItem.source == "column") {
-      // props.store.moveStack(droppedItem.columnIndex, droppedItem.rowIndex, props.columnIndex);
-    } else if (droppedItem.source == "freeCell") {
-      // props.store.moveFromFreeCell(droppedItem.columnIndex, props.columnIndex);
-    }
   }
 };
 

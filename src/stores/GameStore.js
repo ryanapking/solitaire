@@ -1,4 +1,4 @@
-import { extendObservable, action, reaction } from 'mobx';
+import { extendObservable, action } from 'mobx';
 
 import hand from './gameHand';
 
@@ -26,8 +26,8 @@ class GameStore {
           // place cards
           console.log("placing dropped cards");
           this.placeCards({
-            columnType: dropData.columnType,
-            column: dropData.column
+            columnType: columnType,
+            column: column
           });
 
           // remove cards
@@ -186,24 +186,20 @@ class GameStore {
             let proposedStack = [...dropTopCard, ...this.grabber.cards];
             let validStack = this.checkCardStack(proposedStack);
             if (validStack) {return true} else return false;
-            break;
           }
           case "freeCell": {
             let cellEmpty = this.freeCells[column] == null;
-            let oneCard = this.grabber.cards.length == 1;
+            let oneCard = this.grabber.cards.length === 1;
             if (cellEmpty && oneCard) {return true} else return false;
-            break;
           }
           case "played": {
             let dropTopCard = this.getTopCard(this.playedCards[column]);
             let proposedStack = [...dropTopCard, ...this.grabber.cards];
             let validStack = this.checkPlayStack(proposedStack);
             if (validStack) {return true} else return false;
-            break;
           }
           default: {
             return false;
-            break;
           }
         }
       },
@@ -218,12 +214,12 @@ class GameStore {
 
       checkPlayStack: function(stack) {
         // checks if this is the first card played, and if it's an ace
-        if ( stack.length == 1 ) {
-          if (stack[0].value == 1 ) {
+        if ( stack.length === 1 ) {
+          if (stack[0].value === 1 ) {
             return true;
           }
         // check if the suits match and the cars have incremented by one
-        } else if (stack[0].suit == stack[1].suit && stack[0].value - stack[1].value == -1) {
+      } else if (stack[0].suit === stack[1].suit && stack[0].value - stack[1].value === -1) {
           return true;
         } else {
           return false;
@@ -236,7 +232,7 @@ class GameStore {
         let previousCard = null;
         let moveValidity = true;
         stack.forEach((card) => {
-          if (previousCard && (card.color == previousCard.color || previousCard.value - card.value != 1) ) {
+          if (previousCard && (card.color === previousCard.color || previousCard.value - card.value !== 1) ) {
             moveValidity = false;
           }
           previousCard = card;
@@ -245,7 +241,7 @@ class GameStore {
       },
 
       countEmptyColumns: function(ignoreColumn = null) {
-        let emptyColumnCounter = (accumulator, currentColumn, index) => (currentColumn.length == 0 && index != ignoreColumn) ? ++accumulator : accumulator;
+        let emptyColumnCounter = (accumulator, currentColumn, index) => (currentColumn.length === 0 && index !== ignoreColumn) ? ++accumulator : accumulator;
         return this.columns.reduce(emptyColumnCounter, 0);
       },
 
@@ -268,11 +264,11 @@ class GameStore {
         console.log("autoplaying");
 
         // check freecells for playable cards
-        for (var i = 0; i < 4; i++) {
+        for (let i = 0; i < 4; i++) {
           if (this.freeCells[i]) {
-            for (var j = 0; j < 4; j++) {
+            for (let j = 0; j < 4; j++) {
               let dropTopCard = this.getTopCard(this.playedCards[j]);
-              let proposedStack = [...dropTopCard, this.freeCells[i]].filter((card) => card.constructor.name == "Card");
+              let proposedStack = [...dropTopCard, this.freeCells[i]].filter((card) => card.constructor.name === "Card");
               if (this.checkPlayStack(proposedStack)) {
                 this.grabCards({
                   columnType: "freeCell",
@@ -289,12 +285,12 @@ class GameStore {
         }
 
         // check main columns for playable cards
-        for (var i = 0; i < 8; i++) {
+        for (let i = 0; i < 8; i++) {
           if (this.columns[i].length > 0) {
-            for (var j = 0; j < 4; j++) {
+            for (let j = 0; j < 4; j++) {
               let dropTopCard = this.getTopCard(this.playedCards[j]);
               let playCard = this.getTopCard(this.columns[i]);
-              let proposedStack = [...dropTopCard, ...playCard].filter((card) => card.constructor.name == "Card");
+              let proposedStack = [...dropTopCard, ...playCard].filter((card) => card.constructor.name === "Card");
               if (this.checkPlayStack(proposedStack)) {
                 this.grabCards({
                   columnType: "column",
@@ -310,8 +306,8 @@ class GameStore {
             }
           }
         }
+      })
 
-      }),
     })
   }
 }
