@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { inject, observable, observer } from 'mobx-react';
+import { inject } from 'mobx-react';
 import { DragSource } from 'react-dnd';
 
 class Card extends Component {
   render() {
-    const { connectDragSource, isDragging, card, columnIndex, rowIndex, columnCardCount } = this.props;
+    const { connectDragSource, card, rowIndex, columnCardCount } = this.props;
 
     // styles to fan card stack and allow drag preview to show all cards being dragged
     const top = (rowIndex * 30) + 170 + 'px';
@@ -17,7 +17,7 @@ class Card extends Component {
 
     return connectDragSource(
       <div className="card"  style={cardStyles}>
-        <img src={card.image}/>
+        <img src={card.image} alt={card.value}/>
       </div>
     )
   }
@@ -26,16 +26,12 @@ class Card extends Component {
 // to be sent to React DND
 const cardSource = {
   beginDrag(props, monitor, component) {
-    // console.log("card.js component: ", component);
-    // console.log("card.js props: ", props);
-    // console.log("key: ", props.key);
-    console.log("beginning drag");
     props.store.grabCards({
       columnType: props.columnType,
       column: props.columnIndex,
       row: props.rowIndex
     })
-    return {"card": props.card, "columnIndex": props.columnIndex, "rowIndex": props.rowIndex, "source": props.source};
+    return {"card": props.card};
   }
 };
 

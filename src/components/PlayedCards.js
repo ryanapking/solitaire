@@ -1,17 +1,20 @@
 import React, { Component } from 'react'
-import { inject, observable, observer } from 'mobx-react'
+import { inject } from 'mobx-react'
 import { DropTarget } from 'react-dnd';
 
 import Card from './Card';
 
 class PlayedCards extends Component {
   render() {
-    const { children, store, columnIndex, connectDropTarget, isOver, source } = this.props;
-    var overClass = (isOver ? "column dropHere" : "column");
+    const { store, columnIndex, connectDropTarget, isOver } = this.props;
+    let overClass = "column";
+    if (isOver && store.grabber && store.validateDrop({columnType: "played", column: columnIndex})) {
+      overClass += " dropHere";
+    }
     return connectDropTarget(
       <div className={overClass}>
         {this.props.cards.map((card, index) =>
-          <Card card={card} columnIndex={columnIndex} source={source} columnType="played"/>
+          <Card key={index} card={card} columnIndex={columnIndex} columnType="played"/>
         )}
       </div>
 
@@ -23,11 +26,6 @@ class PlayedCards extends Component {
 // to be sent to React DND
 const columnTarget = {
   drop(props, monitor, component) {
-    const droppedItem = monitor.getItem();
-    // console.log('WTF props', props);
-    // console.log("WTF monitor: ", monitor);
-    // console.log("WTF component: ", component);
-    // console.log("get item: ", monitor.getItem());
     props.store.dropCards({
       columnType: "played",
       column: props.columnIndex
