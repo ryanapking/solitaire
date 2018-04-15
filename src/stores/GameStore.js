@@ -315,29 +315,32 @@ class GameStore {
         // calls the command parser
         let parseResults = this.commandParser.parseCommands(this.consoleCommand);
 
-        console.log(parseResults);
-
+        // do not run the methods if any errors were found by the parser
         let errorCounter = (errors, command) => (command.message) ? errors + 1 : errors;
-        let errors = parseResults.reduce(errorCounter, 0);
-
-        console.log("parser error count: ", errors);
-        if (errors > 0) {
-          return;
+        let errorCount = parseResults.reduce(errorCounter, 0);
+        if (errorCount > 0) {
+          let errorCommands = parseResults.filter((command) => (!command.message))
+          console.log("Error found by parser. Parser results: ", parseResults);
+          return parseResults;
         }
 
+        // run the methods
         parseResults.forEach((command) => {
           console.log("logging command: ", command);
 
-          switch(command.method) {
-            case "autoPlay": {
-              this.autoPlay();
-            }
-          }
-        })
+          // this shit works and is the fastest solution for now
+          let runMe = `this.${command.method}(command.data);`;
+          let result = function(str){
+            return eval(str);
+          }.call(this,runMe);
 
-        // check each command, run if no error
-
-        // if there is an error, print that shit somewhere
+          // // maybe a switch statement will make sense in the long run, as it would allow more control
+          // switch(command.method) {
+          //   case "autoPlay": {
+          //     this.autoPlay();
+          //   }
+          // }
+        });
       })
 
     })
