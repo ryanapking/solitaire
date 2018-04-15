@@ -1,6 +1,7 @@
 import { extendObservable, action } from 'mobx';
 
 import hand from './gameHand';
+import commandParser from './CommandParser';
 
 class GameStore {
   constructor() {
@@ -10,6 +11,8 @@ class GameStore {
       freeCells: hand.freeCells,
       playedCards: hand.playedCards,
       grabber: null,
+      consoleCommand: null,
+      commandParser: commandParser,
 
       // validates a drop, then takes needed actions if it's a valid move. Called by react drag and drop
       dropCards: action(function(dropData) {
@@ -219,11 +222,11 @@ class GameStore {
             return true;
           }
         // check if the suits match and the cars have incremented by one
-      } else if (stack[0].suit === stack[1].suit && stack[0].value - stack[1].value === -1) {
-          return true;
-        } else {
-          return false;
-        }
+        } else if (stack[0].suit === stack[1].suit && stack[0].value - stack[1].value === -1) {
+            return true;
+          } else {
+            return false;
+          }
       },
 
       checkCardStack: function(stack) {
@@ -306,6 +309,35 @@ class GameStore {
             }
           }
         }
+      }),
+
+      runConsoleCommands: action(function() {
+        // calls the command parser
+        let parseResults = this.commandParser.parseCommands(this.consoleCommand);
+
+        console.log(parseResults);
+
+        let errorCounter = (errors, command) => (command.message) ? errors + 1 : errors;
+        let errors = parseResults.reduce(errorCounter, 0);
+
+        console.log("parser error count: ", errors);
+        if (errors > 0) {
+          return;
+        }
+
+        parseResults.forEach((command) => {
+          console.log("logging command: ", command);
+
+          switch(command.method) {
+            case "autoPlay": {
+              this.autoPlay();
+            }
+          }
+        })
+
+        // check each command, run if no error
+
+        // if there is an error, print that shit somewhere
       })
 
     })
