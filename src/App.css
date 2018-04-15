@@ -2,6 +2,10 @@ html {
   background-color: #076324;
 }
 
+.App {
+  display: flex;
+}
+
 .card {
   position: absolute;
 }
@@ -37,4 +41,19 @@ html {
 
 .top {
   display: flex;
+}
+
+.consoleSection {
+  width: 100%;
+  padding: 25px;
+}
+
+.console {
+  width: 100%;
+  height: 100%;
+  background-color: lightgray;
+}
+
+.consoleComponent {
+  height: 100%;
 }

@@ -8,6 +8,7 @@ import './App.css';
 import Column from './components/Column';
 import FreeCell from './components/FreeCell';
 import PlayedCards from './components/PlayedCards';
+import Console from './components/Console';
 
 import GameStore from './stores/GameStore'
 
@@ -16,27 +17,37 @@ class App extends Component {
     return (
       <Provider store={GameStore}>
         <div className="App">
-          <div className="top">
-            <div className = "freeCells">
-              {GameStore.freeCells.map(( card, columnIndex ) =>
-                <FreeCell columnIndex={columnIndex} key={columnIndex} card={card}/>
-              )}
+          <div className="gameSection">
+            <div className="top">
+              <div className = "freeCells">
+                {GameStore.freeCells.map(( card, columnIndex ) =>
+                  <FreeCell columnIndex={columnIndex} key={columnIndex} card={card}/>
+                )}
+              </div>
+              <div className = "playedCards">
+                {GameStore.playedCards.map(( cards, columnIndex ) =>
+                  <PlayedCards columnIndex={columnIndex} key={columnIndex} cards={cards}/>
+                )}
+              </div>
             </div>
-            <div className = "playedCards">
-              {GameStore.playedCards.map(( cards, columnIndex ) =>
-                <PlayedCards columnIndex={columnIndex} key={columnIndex} cards={cards}/>
+            <div className="main">
+              {GameStore.columns.map(( cards, columnIndex ) =>
+                <Column columnIndex={columnIndex} key={columnIndex} cards={cards}/>
               )}
             </div>
           </div>
-          <div className="main">
-            {GameStore.columns.map(( cards, columnIndex ) =>
-              <Column columnIndex={columnIndex} key={columnIndex} cards={cards}/>
-            )}
+          <div className="consoleSection">
+            <Console/>
           </div>
         </div>
       </Provider>
     );
   }
+
+  componentDidMount() {
+    // GameStore.autoPlay();
+  }
+
 }
 
 export default DragDropContext(HTML5Backend)(observer(App));
