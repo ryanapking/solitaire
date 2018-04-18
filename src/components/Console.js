@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { inject } from 'mobx-react'
 
-import Card from './Card';
-
 class FreeCell extends Component {
   render() {
     const { store } = this.props;

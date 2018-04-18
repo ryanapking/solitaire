@@ -321,18 +321,23 @@ class GameStore {
         if (errorCount > 0) {
           let errorCommands = parseResults.filter((command) => (!command.message))
           console.log("Error found by parser. Parser results: ", parseResults);
-          return parseResults;
+          return errorCommands;
         }
+
+        let results = [];
 
         // run the methods
         parseResults.forEach((command) => {
           console.log("logging command: ", command);
 
           // this shit works and is the fastest solution for now
+          // also react doesn't care for it
           let runMe = `this.${command.method}(command.data);`;
           let result = function(str){
             return eval(str);
           }.call(this,runMe);
+
+          results = [...results, result];
 
           // // maybe a switch statement will make sense in the long run, as it would allow more control
           // switch(command.method) {
@@ -341,6 +346,8 @@ class GameStore {
           //   }
           // }
         });
+
+        return results;
       })
 
     })
