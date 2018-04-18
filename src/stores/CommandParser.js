@@ -1,7 +1,7 @@
 class CommandParser {
   constructor() {
-    this.allMethods = ["autoPlay"];
-    this.availableMethods = ["autoPlay"];
+    this.allMethods = ["autoPlay", "dropCards", "grabCards", "placeCards", "removeCards", "moveCards"];
+    this.availableMethods = this.allMethods;
   }
 
   // Only method called from GameStore
