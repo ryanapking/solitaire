@@ -27,7 +27,7 @@ class FreeCell extends Component {
 // to be sent to React DND
 const columnTarget = {
   drop(props, monitor, component) {
-    props.store.dropCards({
+    props.store.game.dropCards({
       columnType: "freeCell",
       column: props.columnIndex
     })

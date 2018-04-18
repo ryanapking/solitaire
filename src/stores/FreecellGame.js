@@ -1,18 +1,15 @@
 import { extendObservable, action } from 'mobx';
+import { FreecellHand } from './FreecellHand';
 
-import hand from './gameHand';
-import commandParser from './CommandParser';
-
-class GameStore {
+export class FreecellGame {
   constructor() {
+    let hand = new FreecellHand();
     extendObservable(this, {
       // used to draw the board
       columns: hand.columns,
       freeCells: hand.freeCells,
       playedCards: hand.playedCards,
       grabber: null,
-      consoleCommand: null,
-      commandParser: commandParser,
 
       // validates a drop, then takes needed actions if it's a valid move. Called by react drag and drop
       dropCards: action(function(dropData) {
@@ -311,47 +308,6 @@ class GameStore {
         }
       }),
 
-      runConsoleCommands: action(function() {
-        // calls the command parser
-        let parseResults = this.commandParser.parseCommands(this.consoleCommand);
-
-        // do not run the methods if any errors were found by the parser
-        let errorCounter = (errors, command) => (command.message) ? errors + 1 : errors;
-        let errorCount = parseResults.reduce(errorCounter, 0);
-        if (errorCount > 0) {
-          let errorCommands = parseResults.filter((command) => (!command.message))
-          console.log("Error found by parser. Parser results: ", parseResults);
-          return errorCommands;
-        }
-
-        let results = [];
-
-        // run the methods
-        parseResults.forEach((command) => {
-          console.log("logging command: ", command);
-
-          // this shit works and is the fastest solution for now
-          // also react doesn't care for it
-          let runMe = `this.${command.method}(command.data);`;
-          let result = function(str){
-            return eval(str);
-          }.call(this,runMe);
-
-          results = [...results, result];
-
-          // // maybe a switch statement will make sense in the long run, as it would allow more control
-          // switch(command.method) {
-          //   case "autoPlay": {
-          //     this.autoPlay();
-          //   }
-          // }
-        });
-
-        return results;
-      })
-
     })
   }
 }
-
-export default new GameStore();

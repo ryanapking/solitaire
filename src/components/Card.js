@@ -26,7 +26,7 @@ class Card extends Component {
 // to be sent to React DND
 const cardSource = {
   beginDrag(props, monitor, component) {
-    props.store.grabCards({
+    props.store.game.grabCards({
       columnType: props.columnType,
       column: props.columnIndex,
       row: props.rowIndex
