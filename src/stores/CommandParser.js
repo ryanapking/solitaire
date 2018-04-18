@@ -1,4 +1,4 @@
-class CommandParser {
+export class CommandParser {
   constructor() {
     this.allMethods = ["autoPlay", "dropCards", "grabCards", "placeCards", "removeCards", "moveCards"];
     this.availableMethods = this.allMethods;
@@ -59,7 +59,3 @@ class CommandParser {
     return command;
   }
 }
-
-let commandParser = new CommandParser();
-
-export default commandParser;

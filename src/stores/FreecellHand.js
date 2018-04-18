@@ -23,7 +23,7 @@ class Deck {
   }
 }
 
-class Hand {
+export class FreecellHand {
   constructor() {
     // properties used in the gamestore
     this.columns = [ [], [], [], [], [], [], [], [] ];
@@ -49,7 +49,3 @@ class Hand {
     return a;
   }
 }
-
-let hand = new Hand();
-
-export default hand;

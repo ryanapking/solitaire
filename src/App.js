@@ -10,28 +10,28 @@ import FreeCell from './components/FreeCell';
 import PlayedCards from './components/PlayedCards';
 import Console from './components/Console';
 
-import GameStore from './stores/GameStore'
+import AppStore from './stores/AppStore'
 
 class App extends Component {
   render() {
     return (
-      <Provider store={GameStore}>
+      <Provider store={AppStore}>
         <div className="App">
           <div className="gameSection">
             <div className="top">
               <div className = "freeCells">
-                {GameStore.freeCells.map(( card, columnIndex ) =>
+                {AppStore.game.freeCells.map(( card, columnIndex ) =>
                   <FreeCell columnIndex={columnIndex} key={columnIndex} card={card}/>
                 )}
               </div>
               <div className = "playedCards">
-                {GameStore.playedCards.map(( cards, columnIndex ) =>
+                {AppStore.game.playedCards.map(( cards, columnIndex ) =>
                   <PlayedCards columnIndex={columnIndex} key={columnIndex} cards={cards}/>
                 )}
               </div>
             </div>
             <div className="main">
-              {GameStore.columns.map(( cards, columnIndex ) =>
+              {AppStore.game.columns.map(( cards, columnIndex ) =>
                 <Column columnIndex={columnIndex} key={columnIndex} cards={cards}/>
               )}
             </div>
