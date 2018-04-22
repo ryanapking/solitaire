@@ -7,9 +7,9 @@ class AppStore {
   constructor() {
     extendObservable(this, {
       // used to draw the board
+      consoleCommand: null,
       game: new FreecellGame(),
       commandParser: new CommandParser(),
-      consoleCommand: null,
       runConsoleCommands: action(function() {
         // calls the command parser
         let parseResults = this.commandParser.parseCommands(this.consoleCommand);
