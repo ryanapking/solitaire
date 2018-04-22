@@ -1,23 +1,33 @@
 import cardImages from '../images/cardImages';
 
 class Card {
-  constructor(suit, color, value, image = null) {
-    this.suit = suit;
-    this.color = color;
+  constructor(suit, value, displayValue, image = null) {
+    this.suit = suit.suit;
+    this.color = suit.color;
     this.value = value;
     this.image = image;
+
+    this.suitUnicode = suit.suitUnicode;
+    this.displayValue = displayValue;
+    this.displayColor = null;
   }
 }
 
 class Deck {
   constructor() {
-    this.suits = [{suit: "club", color: "black"}, {suit: "spade", color: "black"}, {suit: "heart", color: "red"}, {suit: "diamond", color: "red"}];
+    this.suits = [
+      {suit: "club", suitUnicode: "\u2663", color: "black"},
+      {suit: "spade", suitUnicode: "\u2660", color: "black"},
+      {suit: "heart", suitUnicode: "\u2665", color: "red"},
+      {suit: "diamond", suitUnicode: "\u2666", color: "red"}
+    ];
     this.values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+    this.displayValues = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     this.cards = [];
 
     this.suits.forEach((suit, suitIndex) => {
       this.values.forEach((value, valueIndex) => {
-        this.cards.push(new Card(suit.suit, suit.color, value, cardImages[suitIndex][value]));
+        this.cards.push(new Card(suit, value, this.displayValues[valueIndex], cardImages[suitIndex][value]));
       })
     })
   }
