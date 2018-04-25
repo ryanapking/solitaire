@@ -9,7 +9,12 @@ export class FreecellGame {
       columns: hand.columns,
       freeCells: hand.freeCells,
       playedCards: hand.playedCards,
-      grabber: null,
+      grabber: {
+        success: 1,
+        message: "Grabber initiated",
+        requestData: {},
+        cards: []
+      },
 
       // used for determine if a card should be autplayed
       maxAutoPlayRed: 2,
@@ -47,7 +52,7 @@ export class FreecellGame {
 
         // clear grabber
         // console.log("clearing grabber");
-        this.grabber = null;
+        this.grabber.cards = [];
 
         return dropValid;
       }),
