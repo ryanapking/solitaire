@@ -175,6 +175,11 @@ export class FreecellGame {
         // does the whole damn thing, for future game purposes
       }),
 
+      clearGrabber: action(function() {
+        console.log("clearing grabber");
+        this.grabber.cards = [];
+      }),
+
       // helper functions
       validateDrop: function(dropData) {
         // confirms that a drop meets the freecells rules
