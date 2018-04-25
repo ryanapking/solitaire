@@ -1,15 +1,36 @@
 import React, { Component } from 'react';
 import { inject } from 'mobx-react';
 import { DragSource } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend'
 
 class Card extends Component {
+  componentDidMount() {
+  		// Use empty image as a drag preview so browsers don't draw it
+  		// and we can draw whatever we want on the custom drag layer instead.
+  		this.props.connectDragPreview(getEmptyImage(), {
+  			// IE fallback: specify that we'd rather screenshot the node
+  			// when it already knows it's being dragged so we can hide it with CSS.
+  			captureDraggingState: true,
+  		})
+  	}
+
   render() {
-    const { connectDragSource, card, rowIndex, columnCardCount } = this.props;
+    const { connectDragSource, card, rowIndex, columnCardCount, isDragging, dragLayer } = this.props;
 
     // styles to fan card stack and allow drag preview to show all cards being dragged
     const indCardHeight = 150;
     const top = (rowIndex * 30) + 170 + 'px';
     const height = ((columnCardCount - 1 - rowIndex) * 30) + 150 + 'px';
+
+    const hideCard = {
+      // opacity: isDragging ? 0 : 1,
+    }
+
+    const draggingStyles = dragLayer ? {
+      position: 'fixed',
+      top: '25px',
+      left: '25px',
+    } : {};
 
     const cardStyles = {
       top: top,
@@ -85,7 +106,7 @@ class Card extends Component {
     }
 
     return connectDragSource(
-      <div className="card"  style={cardStyles}>
+      <div className="card"  style={{...cardStyles, ...hideCard, ...dragLayer}}>
         <div className="cardFront" style={hide}>
           <div className="cardTop" style={cardTopStyles}>
             <div className="value" style={valueAlign}>{card.displayValue}</div>
@@ -119,6 +140,7 @@ const cardSource = {
 function collect(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview(),
     isDragging: monitor.isDragging()
   }
 }

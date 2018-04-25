@@ -9,6 +9,7 @@ import Column from './components/Column';
 import FreeCell from './components/FreeCell';
 import PlayedCards from './components/PlayedCards';
 import Console from './components/Console';
+import CustomDragLayer from './components/CustomDragLayer';
 
 import AppStore from './stores/AppStore'
 
@@ -17,6 +18,7 @@ class App extends Component {
     return (
       <Provider store={AppStore}>
         <div className="App">
+          <CustomDragLayer />
           <div className="gameSection">
             <div className="top">
               <div className = "freeCells">

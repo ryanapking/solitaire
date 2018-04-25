@@ -49,6 +49,7 @@ export class FreecellHand {
       this.columns[dealIndex % 8].push(deck.pop());
       dealIndex++;
     }
+    this.columns[0] = []
   }
 
   shuffle(a) {
