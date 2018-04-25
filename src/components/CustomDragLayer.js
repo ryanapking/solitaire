@@ -17,28 +17,21 @@ class CustomDragLayer extends Component {
 	render() {
 		const { item, itemType, isDragging, store } = this.props;
     const { initialOffset, currentOffset } = this.props;
+    const { cards } = store.game.grabber;
 
 		if (!isDragging || !initialOffset || !currentOffset) {
 			return null
 		}
 
-    console.log("initial offset: ", initialOffset);
-    console.log("current offset: ", currentOffset);
-
-    let { x, y } = currentOffset;
-
-    console.log("x, y: ", x, y);
-
-    const offsetStyles =  {
-      position: 'fixed',
-      left: x + 'px',
-      top: y + 'px',
+    const offset =  {
+      x: currentOffset.x,
+      y: currentOffset.y,
     }
 
 		return (
-			<div styles={offsetStyles}>
-        {store.game.grabber.cards.map((card, index) =>
-          <Card key={index} card={card} rowIndex={index} columnCardCount={store.game.grabber.cards.length} columnType="column" dragLayer={offsetStyles}/>
+			<div>
+        {cards.map((card, index) =>
+          <Card key={index} card={card} rowIndex={index} dragLayerOffset={offset}/>
         )}
 			</div>
 		)
