@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend'
 
@@ -72,4 +72,4 @@ function collect(connect, monitor) {
   }
 }
 
-export default inject('store')(DragSource('card', cardSource, collect)(Card));
+export default inject('store')(DragSource('card', cardSource, collect)(observer(Card)));
