@@ -36,13 +36,18 @@ class Card extends Component {
     }
 
     const cardStyles = {
+      position: 'absolute',
       top: top,
     };
+
+    const imgStyles = {
+      width: '100px',
+    }
 
 
     return connectDragSource(
       <div className="card"  style={{...cardStyles, ...dragLayerStyles, ...hideCard}}>
-        <img src={card.image} alt={card.value}/>
+        <img src={card.image} alt={card.value} style={imgStyles}/>
       </div>
     )
   }

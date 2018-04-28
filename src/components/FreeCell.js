@@ -7,19 +7,27 @@ import Card from './Card';
 class FreeCell extends Component {
   render() {
     const { store, columnIndex, connectDropTarget, isOver } = this.props;
-    let overClass = "column";
-    if (isOver && store.grabber && store.validateDrop({columnType: "freeCell", column: columnIndex})) {
-      overClass += " dropHere";
+
+    const freeCellStyles = {
+      width: '98px',
+      height: '143px',
+      border: '1px solid lightgray',
+      borderRadius: '4px',
     }
+
+    const dropStyles = {
+
+    }
+    
     return connectDropTarget(
-      <div className={overClass}>
+      <div style={freeCellStyles}>
         {this.props.card
           ? <Card card={this.props.card} columnIndex={columnIndex} columnType="freeCell"/>
           : null
         }
       </div>
-
     )
+
   }
 }
 

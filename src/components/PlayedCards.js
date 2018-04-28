@@ -7,12 +7,20 @@ import Card from './Card';
 class PlayedCards extends Component {
   render() {
     const { store, columnIndex, connectDropTarget, isOver } = this.props;
-    let overClass = "column";
-    if (isOver && store.grabber && store.validateDrop({columnType: "played", column: columnIndex})) {
-      overClass += " dropHere";
+
+    const playedCardsStyles = {
+      width: '98px',
+      height: '143px',
+      border: '1px solid lightgray',
+      borderRadius: '4px',
     }
+
+    const dropStyles = {
+      
+    }
+
     return connectDropTarget(
-      <div className={overClass}>
+      <div style={playedCardsStyles}>
         {this.props.cards.map((card, index) =>
           <Card key={index} card={card} columnIndex={columnIndex} columnType="played"/>
         )}

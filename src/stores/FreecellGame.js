@@ -175,9 +175,13 @@ export class FreecellGame {
         // does the whole damn thing, for future game purposes
       }),
 
+      // clears cards from the grabber
       clearGrabber: action(function() {
-        console.log("clearing grabber");
         this.grabber.cards = [];
+      }),
+
+      animatedMove: action(function(moveData) {
+
       }),
 
       // helper functions
@@ -307,8 +311,7 @@ export class FreecellGame {
         }
       },
 
-      // Autoplay functions
-      // currently plays ALL playable cards
+      // Autoplay functions to avoid excessive clicking/dragging
       autoPlay: action(function() {
         // console.log("autoplaying");
 
