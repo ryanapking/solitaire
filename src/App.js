@@ -15,30 +15,45 @@ import AppStore from './stores/AppStore'
 
 class App extends Component {
   render() {
+
+    const displayFlex = {
+      display: 'flex',
+    }
+
+    const gameTopStyles = {
+      display: 'flex',
+      height: '170px',
+    }
+
+    const consoleSectionStyles = {
+      width: '100%',
+      padding: '25px',
+    }
+
     return (
       <Provider store={AppStore}>
-        <div className="App">
+        <div className="App" style={displayFlex}>
           <CustomDragLayer />
           <div className="gameSection">
-            <div className="top">
-              <div className = "freeCells">
+            <div className="gameTop" style={gameTopStyles}>
+              <div className = "freeCells" style={displayFlex}>
                 {AppStore.game.freeCells.map(( card, columnIndex ) =>
                   <FreeCell columnIndex={columnIndex} key={columnIndex} card={card}/>
                 )}
               </div>
-              <div className = "playedCards">
+              <div className = "playedCards" style={displayFlex}>
                 {AppStore.game.playedCards.map(( cards, columnIndex ) =>
                   <PlayedCards columnIndex={columnIndex} key={columnIndex} cards={cards}/>
                 )}
               </div>
             </div>
-            <div className="main">
+            <div className="main" style={displayFlex}>
               {AppStore.game.columns.map(( cards, columnIndex ) =>
                 <Column columnIndex={columnIndex} key={columnIndex} cards={cards}/>
               )}
             </div>
           </div>
-          <div className="consoleSection">
+          <div className="consoleSection" style={consoleSectionStyles}>
             <Console/>
           </div>
         </div>
