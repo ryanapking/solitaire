@@ -15,7 +15,7 @@ class Card extends Component {
   	}
 
   render() {
-    const { connectDragSource, card, rowIndex, columnCardCount, isDragging, dragLayerOffset, store } = this.props;
+    const { connectDragSource, card, rowIndex, dragLayerOffset, store } = this.props;
 
     // styles to fan card stack and allow drag preview to show all cards being dragged
     const top = (rowIndex * 30) + 170 + 'px';
@@ -38,10 +38,11 @@ class Card extends Component {
     const cardStyles = {
       position: 'absolute',
       top: top,
+      width: '100px',
     };
 
     const imgStyles = {
-      width: '100px',
+      width: '100%',
     }
 
 

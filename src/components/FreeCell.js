@@ -6,7 +6,7 @@ import Card from './Card';
 
 class FreeCell extends Component {
   render() {
-    const { store, columnIndex, connectDropTarget, isOver } = this.props;
+    const { columnIndex, connectDropTarget, isOver } = this.props;
 
     const freeCellStyles = {
       width: '98px',
@@ -18,7 +18,7 @@ class FreeCell extends Component {
     const dropStyles = {
 
     }
-    
+
     return connectDropTarget(
       <div style={freeCellStyles}>
         {this.props.card

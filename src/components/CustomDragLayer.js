@@ -7,7 +7,7 @@ import Card from './Card';
 class CustomDragLayer extends Component {
 
 	render() {
-		const { item, itemType, isDragging, store } = this.props;
+		const { isDragging, store } = this.props;
     const { initialOffset, currentOffset } = this.props;
     const { cards } = store.game.grabber;
 

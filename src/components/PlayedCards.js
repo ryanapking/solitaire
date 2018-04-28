@@ -16,7 +16,7 @@ class PlayedCards extends Component {
     }
 
     const dropStyles = {
-      
+
     }
 
     return connectDropTarget(
