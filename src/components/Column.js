@@ -15,14 +15,28 @@ class Column extends Component {
       borderRadius: '4px',
     }
 
-    const dropStyles = {
+    const greenBackground = {
+      background: 'green',
+    }
 
+    let backgroundStyles = {};
+    let cardColor = '';
+
+    if (isOver) {
+      const canDrop = (store.game.grabber.cards && store.game.validateDrop({columnType: "column", column: columnIndex}));
+      backgroundStyles = canDrop ? greenBackground : {};
+      cardColor = canDrop ? 'green' : '';
     }
 
     return connectDropTarget(
-      <div style={columnStyles}>
-        {cards.map((card, index) =>
-          <Card key={index} card={card} rowIndex={index} columnIndex={columnIndex} columnCardCount={cards.length} columnType="column"/>
+      <div style={{...columnStyles, ...backgroundStyles}}>
+        {cards.map((card, index) => {
+          // only send card color for the last card in the column
+          const sendColor = (index === cards.length-1) ? cardColor : '';
+          return (
+            <Card key={index} card={card} rowIndex={index} columnIndex={columnIndex} columnCardCount={cards.length} columnType="column" cardColor={sendColor}/>
+          )
+        }
         )}
       </div>
     )

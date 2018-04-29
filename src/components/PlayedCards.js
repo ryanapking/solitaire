@@ -13,16 +13,25 @@ class PlayedCards extends Component {
       height: '143px',
       border: '1px solid lightgray',
       borderRadius: '4px',
-    }
+    };
 
-    const dropStyles = {
+    const greenBackground = {
+      background: 'green',
+    };
 
+    let backgroundStyles = {};
+    let cardColor = 'norm';
+
+    if (isOver) {
+      const canDrop = (store.game.grabber.cards && store.game.validateDrop({columnType: "played", column: columnIndex}));
+      backgroundStyles = canDrop ? greenBackground : {};
+      cardColor = canDrop ? 'green' : '';
     }
 
     return connectDropTarget(
-      <div style={playedCardsStyles}>
+      <div style={{...playedCardsStyles, ...backgroundStyles}}>
         {this.props.cards.map((card, index) =>
-          <Card key={index} card={card} columnIndex={columnIndex} columnType="played"/>
+          <Card key={index} card={card} columnIndex={columnIndex} columnType="played" cardColor={cardColor}/>
         )}
       </div>
 

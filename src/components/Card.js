@@ -15,7 +15,7 @@ class Card extends Component {
   	}
 
   render() {
-    const { connectDragSource, card, rowIndex, dragLayerOffset, store } = this.props;
+    const { connectDragSource, card, rowIndex, dragLayerOffset, store, cardColor } = this.props;
 
     // styles to fan card stack and allow drag preview to show all cards being dragged
     const top = (rowIndex * 30) + 170 + 'px';
@@ -45,10 +45,31 @@ class Card extends Component {
       width: '100%',
     }
 
+    const clearCard = {
+      opacity: '.5',
+    }
+
+    const redBackground = {
+      background: 'red',
+    }
+
+    const greenBackground = {
+      background: 'green',
+    }
+
+    let dropImgStyles, backgroundColor = {};
+    if (cardColor === 'green') {
+      dropImgStyles = clearCard;
+      backgroundColor = greenBackground;
+    } else if (cardColor === 'red') {
+      dropImgStyles = clearCard;
+      backgroundColor = redBackground;
+    }
+
 
     return connectDragSource(
-      <div className="card"  style={{...cardStyles, ...dragLayerStyles, ...hideCard}}>
-        <img src={card.image} alt={card.value} style={imgStyles}/>
+      <div className="card"  style={{...cardStyles, ...dragLayerStyles, ...hideCard, ...backgroundColor}}>
+        <img src={card.image} alt={card.value} style={{...imgStyles, ...dropImgStyles}}/>
       </div>
     )
   }
