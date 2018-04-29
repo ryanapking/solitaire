@@ -6,7 +6,7 @@ import Card from './Card';
 
 class FreeCell extends Component {
   render() {
-    const { columnIndex, connectDropTarget, isOver } = this.props;
+    const { columnIndex, connectDropTarget, isOver, store } = this.props;
 
     const freeCellStyles = {
       width: '98px',
@@ -15,14 +15,23 @@ class FreeCell extends Component {
       borderRadius: '4px',
     }
 
-    const dropStyles = {
+    const greenBackground = {
+      background: 'green',
+    }
 
+    let backgroundStyles = {};
+    let cardColor = '';
+
+    if (isOver) {
+      const canDrop = (store.game.grabber.cards && store.game.validateDrop({columnType: "freeCell", column: columnIndex}));
+      backgroundStyles = canDrop ? greenBackground : {};
+      cardColor = canDrop ? 'green' : '';
     }
 
     return connectDropTarget(
-      <div style={freeCellStyles}>
+      <div style={{...freeCellStyles, ...backgroundStyles}}>
         {this.props.card
-          ? <Card card={this.props.card} columnIndex={columnIndex} columnType="freeCell"/>
+          ? <Card card={this.props.card} columnIndex={columnIndex} columnType="freeCell" cardColor={cardColor} />
           : null
         }
       </div>
