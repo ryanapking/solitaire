@@ -18,13 +18,14 @@ class Card extends Component {
     const { connectDragSource, card, rowIndex, dragLayerOffset, store, cardColor } = this.props;
 
     // styles to fan card stack and allow drag preview to show all cards being dragged
-    const top = (rowIndex * 30) + 170 + 'px';
+    const top = (rowIndex * 30) + 'px';
 
     let dragLayerStyles = {};
     let hideCard = {};
 
     if (dragLayerOffset) {
       dragLayerStyles = {
+        maxWidth: '75px',
         position: 'fixed',
         top: dragLayerOffset.y + (rowIndex * 30) + 'px',
         left: dragLayerOffset.x + 'px',
@@ -38,11 +39,12 @@ class Card extends Component {
     const cardStyles = {
       position: 'absolute',
       top: top,
-      width: '100px',
+      width: 'auto',
     };
 
     const imgStyles = {
       width: '100%',
+      // width: '45px',
     }
 
     const clearCard = {

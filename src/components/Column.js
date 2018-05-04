@@ -9,9 +9,11 @@ class Column extends Component {
     const { store, columnIndex, connectDropTarget, isOver, cards } = this.props;
 
     const columnStyles = {
-      width: '98px',
+      // width: '98px',
+      position: 'relative',
+      flex: '1',
       height: '143px',
-      border: '1px solid lightgray',
+      border: '1px solid transparent',
       borderRadius: '4px',
     }
 

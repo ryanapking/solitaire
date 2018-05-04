@@ -9,7 +9,9 @@ class FreeCell extends Component {
     const { columnIndex, connectDropTarget, isOver, store } = this.props;
 
     const freeCellStyles = {
-      width: '98px',
+      flex: '1',
+      position: 'relative',
+      // width: '98px',
       height: '143px',
       border: '1px solid lightgray',
       borderRadius: '4px',
