@@ -9,7 +9,9 @@ class PlayedCards extends Component {
     const { store, columnIndex, connectDropTarget, isOver } = this.props;
 
     const playedCardsStyles = {
-      width: '98px',
+      flex: '1',
+      position: 'relative',
+      // width: '98px',
       height: '143px',
       border: '1px solid lightgray',
       borderRadius: '4px',

@@ -5,8 +5,7 @@ class FreeCell extends Component {
   render() {
     const { store } = this.props;
     const componentStyles = {
-      height: '100%',
-      width: '100%',
+      flex: '1',
       padding: '25px',
     };
 
