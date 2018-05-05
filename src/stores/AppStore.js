@@ -2,11 +2,13 @@ import { extendObservable, action } from 'mobx';
 
 import { CommandParser } from './CommandParser';
 import { FreecellGame } from './FreecellGame';
+import { LevelManager } from './LevelManager';
 
 class AppStore {
   constructor() {
     extendObservable(this, {
       // used to draw the board
+      levelManager: new LevelManager(1),
       consoleCommand: "",
       consoleHistory: "",
       game: new FreecellGame(),
