@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { inject } from 'mobx-react'
+import { inject, observer } from 'mobx-react'
 
 class FreeCell extends Component {
   render() {
@@ -9,6 +9,12 @@ class FreeCell extends Component {
       padding: '25px',
     };
 
+    const historyStyles = {
+      width: '100%',
+      height: '100px',
+      backgroundColor: 'lightgray',
+    }
+
     const textAreaStyles = {
       width: '100%',
       height: '300px',
@@ -17,9 +23,9 @@ class FreeCell extends Component {
 
     return (
       <div className="console" style={componentStyles}>
-        <div className="history">history</div>
-        <textarea className="command" onChange={this.handleConsoleChange.bind(this)} style={textAreaStyles}></textarea>
-        <button className="submit" onClick={() => {store.runConsoleCommands()}}>Run That Shit</button>
+        <textarea className="history" style={historyStyles} value={store.consoleHistory} />
+        <textarea className="command" onChange={this.handleConsoleChange.bind(this)} value={store.consoleCommand} style={textAreaStyles} />
+        <button className="submit" onClick={this.submitCommand.bind(this)}>Run That Shit</button>
       </div>
     );
   }
@@ -27,6 +33,11 @@ class FreeCell extends Component {
   handleConsoleChange(e) {
     this.props.store.consoleCommand = e.target.value;
   }
+
+  submitCommand() {
+    this.props.store.runConsoleCommands();
+    this.props.store.consoleCommand = "";
+  }
 }
 
-export default inject('store')(FreeCell);
+export default inject('store')(observer(FreeCell));
