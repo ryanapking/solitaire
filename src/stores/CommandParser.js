@@ -1,6 +1,6 @@
 export class CommandParser {
   constructor() {
-    this.allMethods = ["autoPlay", "dropCards", "grabCards", "placeCards", "removeCards", "moveCards"];
+    this.allMethods = ["autoPlay", "dropCards", "grabCards", "placeCards", "removeCards", "moveCards", "exportGameState"];
     this.availableMethods = this.allMethods;
   }
 

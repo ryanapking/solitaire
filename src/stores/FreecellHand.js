@@ -1,4 +1,6 @@
 import cardImages from '../images/cardImages';
+import { CLUB, SPADE, DIAMOND, HEART, RED, BLACK } from './constants';
+import gameStates from './gameStates';
 
 class Card {
   constructor(suit, value, displayValue, image = null) {
@@ -16,30 +18,43 @@ class Card {
 class Deck {
   constructor() {
     this.suits = [
-      {suit: "club", suitUnicode: "\u2663", color: "black"},
-      {suit: "spade", suitUnicode: "\u2660", color: "black"},
-      {suit: "heart", suitUnicode: "\u2665", color: "red"},
-      {suit: "diamond", suitUnicode: "\u2666", color: "red"}
+      {suit: CLUB, suitUnicode: "\u2663", color: "black"},
+      {suit: SPADE, suitUnicode: "\u2660", color: "black"},
+      {suit: HEART, suitUnicode: "\u2665", color: "red"},
+      {suit: DIAMOND, suitUnicode: "\u2666", color: "red"}
     ];
     this.values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
     this.displayValues = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
     this.cards = [];
+    this.fullDeck = {};
 
     this.suits.forEach((suit, suitIndex) => {
       this.values.forEach((value, valueIndex) => {
-        this.cards.push(new Card(suit, value, this.displayValues[valueIndex], cardImages[suitIndex][value]));
+        const newCard = new Card(suit, value, this.displayValues[valueIndex], cardImages[suitIndex][value]);
+        this.cards.push(newCard);
+        this.fullDeck[`${newCard.suit}${newCard.value}`] = newCard;
       })
     })
+
+    console.log(this);
   }
 }
 
 export class FreecellHand {
-  constructor() {
+  constructor(level = "random") {
     // properties used in the gamestore
     this.columns = [ [], [], [], [], [], [], [], [] ];
     this.freeCells = [null, null, null, null];
     this.playedCards = [[], [], [], []];
 
+    if (level === "random") {
+      this.randomDeal();
+    } else {
+      this.gameStateDeal();
+    }
+  }
+
+  randomDeal() {
     // get a new deck and shuffle
     let deck = this.shuffle(new Deck().cards);
 
@@ -49,6 +64,28 @@ export class FreecellHand {
       this.columns[dealIndex % 8].push(deck.pop());
       dealIndex++;
     }
+  }
+
+  // takes an abbreviated gamestate, as exported from FreecellGame, and deals it
+  gameStateDeal(level = "level1") {
+    const fullDeck = new Deck().fullDeck;
+    const gameState = gameStates[level];
+
+    this.columns = gameState.columns.map((column) => {
+      return column.map((cardAbbreviation) => {
+        return fullDeck[cardAbbreviation];
+      });
+    });
+
+    this.playedCards = gameState.playedCards.map((playedCardsColumn) => {
+      return playedCardsColumn.map((card) => {
+        return fullDeck[card];
+      });
+    });
+
+    this.freeCells = gameState.freeCells.map((card) => {
+      return card ? fullDeck[card] : null;
+    });
   }
 
   shuffle(a) {
