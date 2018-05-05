@@ -4,6 +4,7 @@ class Level {
     this.gameCheckConditions = levelData.gameCheckConditions;
     this.availableMethods = levelData.availableMethods;
     this.documentedMethods = levelData.documentedMethods;
+    // need to add starting game state. How to manage?
   }
 }
 

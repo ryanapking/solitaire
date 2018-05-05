@@ -366,6 +366,28 @@ export class FreecellGame {
         }
       }),
 
+      // log current gamestate as a json string, to make building levels easier
+      exportGameState: function() {
+        let columns = this.columns.map((column) => {
+          return column.map((card) => {
+            return `${card.suit}${card.value}`;
+          });
+        });
+
+        let playedCards = this.playedCards.map((playedCardsColumn) => {
+          return playedCardsColumn.map((card) => {
+            return `${card.suit}${card.value}`;
+          });
+        });
+
+        let freeCells = this.freeCells.map((card) => {
+          return card ? `${card.suit}${card.value}` : null;
+        });
+
+        const gameState = {columns: columns, freeCells: freeCells, playedCards: playedCards};
+        console.log("gameState: ", JSON.stringify(gameState));
+      },
+
     })
   }
 }
