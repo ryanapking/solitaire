@@ -19,12 +19,16 @@ class FreeCell extends Component {
       }
     }
 
+    if (this.props.card) classNames.push("hideBorder");
+
     return connectDropTarget(
       <div className={classNames.join(' ')}>
-        {this.props.card
-          ? <Card card={this.props.card} columnIndex={columnIndex} columnType="freeCell" cardColor={cardColor} />
-          : null
-        }
+        <div className="cardRatioContainer">
+          {this.props.card
+            ? <Card card={this.props.card} columnIndex={columnIndex} columnType="freeCell" cardColor={cardColor} />
+            : null
+          }
+        </div>
       </div>
     )
 
