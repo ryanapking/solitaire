@@ -8,11 +8,11 @@ class AppStore {
   constructor() {
     extendObservable(this, {
       // used to draw the board
-      levelManager: new LevelManager(1),
+      levelManager: new LevelManager(),
       consoleCommand: "",
       consoleHistory: "",
-      game: new FreecellGame(),
-      commandParser: new CommandParser(),
+      game: new FreecellGame(), // replaced on initial level switch
+      commandParser: new CommandParser(), // replaced on initial level switch
       runConsoleCommands: action(function() {
         // add the command to the history as typed in by the user
         this.consoleHistory += this.consoleCommand + "\n";
@@ -50,10 +50,15 @@ class AppStore {
 
       // change the gamestate to another level
       switchLevels: action(function(level) {
+        // create new objects with updated level data, or find some other way to manage this
+        this.levelManager.setCurrentLevel(level);
         this.game = new FreecellGame(level);
+        this.commandParser = new CommandParser(this.levelManager.currentLevel.availableMethods);
       }),
 
     })
+
+    this.switchLevels(1);
   }
 }
 
