@@ -8,30 +8,19 @@ class FreeCell extends Component {
   render() {
     const { columnIndex, connectDropTarget, isOver, store } = this.props;
 
-    const freeCellStyles = {
-      flex: '1',
-      position: 'relative',
-      // width: '98px',
-      height: '143px',
-      border: '1px solid lightgray',
-      borderRadius: '4px',
-    }
-
-    const greenBackground = {
-      background: 'green',
-    }
-
-    let backgroundStyles = {};
+    let classNames = ['freeCell'];
     let cardColor = '';
 
     if (isOver) {
       const canDrop = (store.game.grabber.cards && store.game.validateDrop({columnType: "freeCell", column: columnIndex}));
-      backgroundStyles = canDrop ? greenBackground : {};
-      cardColor = canDrop ? 'green' : '';
+      if (canDrop) {
+        classNames.push("greenBG");
+        cardColor = canDrop ? 'green' : '';
+      }
     }
 
     return connectDropTarget(
-      <div style={{...freeCellStyles, ...backgroundStyles}}>
+      <div className={classNames.join(' ')}>
         {this.props.card
           ? <Card card={this.props.card} columnIndex={columnIndex} columnType="freeCell" cardColor={cardColor} />
           : null

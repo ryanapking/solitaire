@@ -17,61 +17,30 @@ class Card extends Component {
   render() {
     const { connectDragSource, card, rowIndex, dragLayerOffset, store, cardColor } = this.props;
 
-    // styles to fan card stack and allow drag preview to show all cards being dragged
-    const top = (rowIndex * 30) + 'px';
+    let classNames = ["card"];
 
-    let dragLayerStyles = {};
-    let hideCard = {};
-
-    if (dragLayerOffset) {
-      dragLayerStyles = {
-        maxWidth: '75px',
-        position: 'fixed',
-        top: dragLayerOffset.y + (rowIndex * 30) + 'px',
-        left: dragLayerOffset.x + 'px',
-        pointerEvents: 'none',
-        zIndex: 2,
-      }
-    } else if (store.game.grabber.cards.includes(card)) {
-      hideCard = {opacity: '0'};
-    }
-
-    const cardStyles = {
-      position: 'absolute',
-      top: top,
-      width: 'auto',
+    const cardTopPosition = {
+      top: (rowIndex * 30) + 'px',
     };
 
-    const imgStyles = {
-      width: '100%',
-      // width: '45px',
+    let dragCardPosition = {};
+    if (dragLayerOffset) {
+      classNames.push("draggingCard");
+      dragCardPosition = {
+        top: dragLayerOffset.y + (rowIndex * 30) + 'px',
+        left: dragLayerOffset.x + 'px',
+      }
+    } else if (store.game.grabber.cards.includes(card)) {
+      classNames.push("hideCard");
     }
 
-    const clearCard = {
-      opacity: '.5',
-    }
-
-    const redBackground = {
-      background: 'red',
-    }
-
-    const greenBackground = {
-      background: 'green',
-    }
-
-    let dropImgStyles, backgroundColor = {};
     if (cardColor === 'green') {
-      dropImgStyles = clearCard;
-      backgroundColor = greenBackground;
-    } else if (cardColor === 'red') {
-      dropImgStyles = clearCard;
-      backgroundColor = redBackground;
+      classNames.push('greenCard');
     }
-
 
     return connectDragSource(
-      <div className="card"  style={{...cardStyles, ...dragLayerStyles, ...hideCard, ...backgroundColor}}>
-        <img src={card.image} alt={card.value} style={{...imgStyles, ...dropImgStyles}}/>
+      <div className={classNames.join(' ')}  style={{...cardTopPosition, ...dragCardPosition}}>
+        <img src={card.image} alt={card.value}/>
       </div>
     )
   }
