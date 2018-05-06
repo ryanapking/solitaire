@@ -18,10 +18,10 @@ class Card {
 class Deck {
   constructor() {
     this.suits = [
-      {suit: CLUB, suitUnicode: "\u2663", color: "black"},
-      {suit: SPADE, suitUnicode: "\u2660", color: "black"},
-      {suit: HEART, suitUnicode: "\u2665", color: "red"},
-      {suit: DIAMOND, suitUnicode: "\u2666", color: "red"}
+      {suit: CLUB, suitUnicode: "\u2663", color: BLACK},
+      {suit: SPADE, suitUnicode: "\u2660", color: BLACK},
+      {suit: HEART, suitUnicode: "\u2665", color: RED},
+      {suit: DIAMOND, suitUnicode: "\u2666", color: RED}
     ];
     this.values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
     this.displayValues = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
@@ -36,7 +36,6 @@ class Deck {
       })
     })
 
-    console.log(this);
   }
 }
 
@@ -78,13 +77,13 @@ export class FreecellHand {
     });
 
     this.playedCards = gameState.playedCards.map((playedCardsColumn) => {
-      return playedCardsColumn.map((card) => {
-        return fullDeck[card];
+      return playedCardsColumn.map((cardAbbreviation) => {
+        return fullDeck[cardAbbreviation];
       });
     });
 
-    this.freeCells = gameState.freeCells.map((card) => {
-      return card ? fullDeck[card] : null;
+    this.freeCells = gameState.freeCells.map((cardAbbreviation) => {
+      return cardAbbreviation ? fullDeck[cardAbbreviation] : null;
     });
   }
 
