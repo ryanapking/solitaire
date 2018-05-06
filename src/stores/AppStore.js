@@ -32,12 +32,25 @@ class AppStore {
 
         // run the methods
         parseResults.forEach((command) => {
-          console.log("logging command: ", command);
-          let result = this.game[command.method](command.data);
-          results = [...results, result];
+          // temporary nonsense to allow me to switch levels via command
+          // most functions are in the freecell game class, but this one makes more sense here
+          // because it affects the available commands as well as the freecell game state
+          // could be moved to the parser somehow?
+          if (command.method === "switchLevels") {
+            this[command.method](command.data.level);
+          } else {
+            console.log("logging command: ", command);
+            let result = this.game[command.method](command.data);
+            results = [...results, result];
+          }
         });
 
         return results;
+      }),
+
+      // change the gamestate to another level
+      switchLevels: action(function(level) {
+        this.game = new FreecellGame(level);
       }),
 
     })

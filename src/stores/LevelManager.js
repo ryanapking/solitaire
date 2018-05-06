@@ -1,35 +1,19 @@
+import gameLevels from './gameLevels';
+
 class Level {
   constructor(levelData) {
+    this.level = levelData.level;
     this.winConditions = levelData.winConditions;
     this.gameCheckConditions = levelData.gameCheckConditions;
     this.availableMethods = levelData.availableMethods;
     this.documentedMethods = levelData.documentedMethods;
-    // need to add starting game state. How to manage?
+    // freecell level states are managed elsewhere?
   }
 }
 
 export class LevelManager {
   constructor(initialLevel = 1) {
-    this.levels = {
-      1: {
-        winConditions: [1],
-        gameCheckConditions: [1],
-        availableMethods: [1],
-        documentedMethods: [1],
-      },
-      2: {
-        winConditions: [2],
-        gameCheckConditions: [2],
-        availableMethods: [2],
-        documentedMethods: [2],
-      },
-      3: {
-        winConditions: [3],
-        gameCheckConditions: [3],
-        availableMethods: [3],
-        documentedMethods: [3],
-      }
-    }
+    this.levels = gameLevels;
     this.setCurrentLevel(initialLevel);
   }
   setCurrentLevel(level) {

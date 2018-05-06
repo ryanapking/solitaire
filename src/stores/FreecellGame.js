@@ -3,8 +3,8 @@ import { FreecellHand } from './FreecellHand';
 import { RED, BLACK } from './constants';
 
 export class FreecellGame {
-  constructor() {
-    let hand = new FreecellHand();
+  constructor(level = 1) {
+    let hand = new FreecellHand(level);
     extendObservable(this, {
       // used to draw the board
       columns: hand.columns,
@@ -17,7 +17,7 @@ export class FreecellGame {
         cards: []
       },
 
-      // used for determine if a card should be autplayed
+      // used for determine if a card should be autoplayed
       maxAutoPlayRed: 2,
       maxAutoPlayBlack: 2,
 
@@ -179,10 +179,6 @@ export class FreecellGame {
       // clears cards from the grabber
       clearGrabber: action(function() {
         this.grabber.cards = [];
-      }),
-
-      animatedMove: action(function(moveData) {
-
       }),
 
       // helper functions
