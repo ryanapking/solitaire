@@ -1,5 +1,6 @@
 import { extendObservable, action } from 'mobx';
 import { FreecellHand } from './FreecellHand';
+import { RED, BLACK } from './constants';
 
 export class FreecellGame {
   constructor() {
@@ -283,9 +284,9 @@ export class FreecellGame {
         this.playedCards.forEach((column) => {
           let topCard = this.getTopCard(column)[0];
           // console.log(topCard);
-          if (topCard && topCard.color === "red") {
+          if (topCard && topCard.color === RED) {
             redPlayed = [...redPlayed, topCard.value];
-          } else if (topCard && topCard.color === "black") {
+          } else if (topCard && topCard.color === BLACK) {
             blackPlayed = [...blackPlayed, topCard.value];
           }
         })
@@ -301,9 +302,9 @@ export class FreecellGame {
       },
 
       getMaxAutoPlay: function(color) {
-        if (color === "red") {
+        if (color === RED) {
           return this.maxAutoPlayRed;
-        } else if (color === "black") {
+        } else if (color === BLACK) {
           return this.maxAutoPlayBlack;
         } else {
           // return something else just in case

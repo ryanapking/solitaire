@@ -33,22 +33,8 @@ class AppStore {
         // run the methods
         parseResults.forEach((command) => {
           console.log("logging command: ", command);
-
-          // this shit works and is the fastest solution for now
-          // also react doesn't care for it
-          let runMe = `this.game.${command.method}(command.data);`;
-          let result = function(str){
-            return eval(str);
-          }.call(this,runMe);
-
+          let result = this.game[command.method](command.data);
           results = [...results, result];
-
-          // // maybe a switch statement will make sense in the long run, as it would allow more control
-          // switch(command.method) {
-          //   case "autoPlay": {
-          //     this.autoPlay();
-          //   }
-          // }
         });
 
         return results;
