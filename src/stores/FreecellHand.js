@@ -1,6 +1,6 @@
 import cardImages from '../images/cardImages';
 import { CLUB, SPADE, DIAMOND, HEART, RED, BLACK } from './constants';
-import gameStates from './gameStates';
+import gameLevels from './gameLevels';
 
 class Card {
   constructor(suit, value, displayValue, image = null) {
@@ -46,10 +46,10 @@ export class FreecellHand {
     this.freeCells = [null, null, null, null];
     this.playedCards = [[], [], [], []];
 
-    if (level === "random") {
+    if (level === "random" || gameLevels[level].freecellGameState === "random") {
       this.randomDeal();
     } else {
-      this.gameStateDeal();
+      this.gameStateDeal(level);
     }
   }
 
@@ -66,9 +66,11 @@ export class FreecellHand {
   }
 
   // takes an abbreviated gamestate, as exported from FreecellGame, and deals it
-  gameStateDeal(level = "level1") {
+  gameStateDeal(level = "1") {
     const fullDeck = new Deck().fullDeck;
-    const gameState = gameStates[level];
+    const gameState = gameLevels[level].freecellGameState;
+
+    console.log("gameState: ", gameState);
 
     this.columns = gameState.columns.map((column) => {
       return column.map((cardAbbreviation) => {
