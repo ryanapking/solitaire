@@ -1,7 +1,6 @@
 export class CommandParser {
-  constructor() {
-    this.allMethods = ["autoPlay", "dropCards", "grabCards", "placeCards", "removeCards", "moveCards", "exportGameState", "switchLevels"];
-    this.availableMethods = this.allMethods;
+  constructor(availableMethods = []) {
+    this.availableMethods = availableMethods;
   }
 
   // Only method called from GameStore
@@ -57,5 +56,9 @@ export class CommandParser {
     }
 
     return command;
+  }
+
+  setAvailableMethods(methods = []) {
+    this.availableMethods = methods;
   }
 }
