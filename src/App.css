@@ -1,3 +1,104 @@
 html {
   background-color: #076324;
 }
+
+/* Console styles */
+
+.console {
+  flex: 1;
+  padding: 25px;
+}
+
+.history {
+  width: 100%;
+  height: 100px;
+  background-color: lightgray;
+}
+
+.command {
+  width: 100%;
+  height: 300px;
+  background-color: lightgray;
+}
+
+/* Freecell Game Styles */
+
+.gameSection {
+  flex: 1;
+}
+
+.gameTop {
+  display: flex;
+  height: 170px;
+}
+
+.gameMain {
+  display: flex;
+}
+
+.freeCells {
+  display: flex;
+  flex: 1;
+}
+
+.playedCards {
+  display: flex;
+  flex: 1;
+}
+
+.column {
+  position: relative;
+  flex: 1;
+  height: 143px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.freeCell {
+  flex: 1;
+  position: relative;
+  height: 143px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+}
+
+.playedCardsColumn {
+  flex: 1;
+  position: relative;
+  height: 143px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+}
+
+.greenBG {
+  background: green;
+}
+
+/* Card styles */
+
+.card {
+  position: absolute;
+}
+
+.card img {
+  width: 100%;
+}
+
+.card.greenCard {
+  background: green;
+}
+
+.card.greenCard img{
+  opacity: .5;
+}
+
+.card.hideCard {
+  opacity: 0;
+}
+
+.card.draggingCard {
+  max-width: 75px;
+  position: fixed;
+  pointer-events: none;
+  z-index: 2;
+}

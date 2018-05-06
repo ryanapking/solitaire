@@ -8,30 +8,19 @@ class PlayedCards extends Component {
   render() {
     const { store, columnIndex, connectDropTarget, isOver } = this.props;
 
-    const playedCardsStyles = {
-      flex: '1',
-      position: 'relative',
-      // width: '98px',
-      height: '143px',
-      border: '1px solid lightgray',
-      borderRadius: '4px',
-    };
-
-    const greenBackground = {
-      background: 'green',
-    };
-
-    let backgroundStyles = {};
-    let cardColor = 'norm';
+    let classNames = ["playedCardsColumn"];
+    let cardColor = '';
 
     if (isOver) {
       const canDrop = (store.game.grabber.cards && store.game.validateDrop({columnType: "played", column: columnIndex}));
-      backgroundStyles = canDrop ? greenBackground : {};
-      cardColor = canDrop ? 'green' : '';
+      if (canDrop) {
+        classNames.push("greenBG");
+        cardColor = 'green';
+      }
     }
 
     return connectDropTarget(
-      <div style={{...playedCardsStyles, ...backgroundStyles}}>
+      <div className={classNames.join(' ')}>
         {this.props.cards.map((card, index) =>
           <Card key={index} card={card} columnIndex={columnIndex} columnType="played" cardColor={cardColor}/>
         )}

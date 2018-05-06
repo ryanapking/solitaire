@@ -8,30 +8,19 @@ class Column extends Component {
   render() {
     const { store, columnIndex, connectDropTarget, isOver, cards } = this.props;
 
-    const columnStyles = {
-      // width: '98px',
-      position: 'relative',
-      flex: '1',
-      height: '143px',
-      border: '1px solid transparent',
-      borderRadius: '4px',
-    }
-
-    const greenBackground = {
-      background: 'green',
-    }
-
-    let backgroundStyles = {};
+    let classNames = ["column"];
     let cardColor = '';
 
     if (isOver) {
       const canDrop = (store.game.grabber.cards && store.game.validateDrop({columnType: "column", column: columnIndex}));
-      backgroundStyles = canDrop ? greenBackground : {};
-      cardColor = canDrop ? 'green' : '';
+      if (canDrop) {
+        classNames.push("greenBG");
+        cardColor = 'green';
+      }
     }
 
     return connectDropTarget(
-      <div style={{...columnStyles, ...backgroundStyles}}>
+      <div className={classNames.join(' ')}>
         {cards.map((card, index) => {
           // only send card color for the last card in the column
           const sendColor = (index === cards.length-1) ? cardColor : '';
