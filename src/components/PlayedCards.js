@@ -19,11 +19,16 @@ class PlayedCards extends Component {
       }
     }
 
+    if (this.props.cards.length) classNames.push("hideBorder");
+
     return connectDropTarget(
       <div className={classNames.join(' ')}>
-        {this.props.cards.map((card, index) =>
-          <Card key={index} card={card} columnIndex={columnIndex} columnType="played" cardColor={cardColor}/>
-        )}
+        <div className="cardRatioContainer">
+          <div className="ace">A</div>
+          {this.props.cards.map((card, index) =>
+            <Card key={index} card={card} columnIndex={columnIndex} columnType="played" cardColor={cardColor}/>
+          )}
+        </div>
       </div>
 
     )

@@ -21,14 +21,16 @@ class Column extends Component {
 
     return connectDropTarget(
       <div className={classNames.join(' ')}>
-        {cards.map((card, index) => {
-          // only send card color for the last card in the column
-          const sendColor = (index === cards.length-1) ? cardColor : '';
-          return (
-            <Card key={index} card={card} rowIndex={index} columnIndex={columnIndex} columnCardCount={cards.length} columnType="column" cardColor={sendColor}/>
-          )
-        }
-        )}
+        <div className="cardRatioContainer">
+          {cards.map((card, index) => {
+            // only send card color for the last card in the column
+            const sendColor = (index === cards.length-1) ? cardColor : '';
+            return (
+              <Card key={index} card={card} rowIndex={index} columnIndex={columnIndex} columnCardCount={cards.length} columnType="column" cardColor={sendColor}/>
+            )
+          }
+          )}
+        </div>
       </div>
     )
   }
