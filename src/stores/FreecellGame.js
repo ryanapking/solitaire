@@ -35,23 +35,19 @@ export class FreecellGame {
         if (dropValid) {
           // place cards
           // console.log("placing dropped cards");
-          this.placeCards({
+          this.addCards({
             columnType: columnType,
             column: column
           });
 
           // remove cards
           // console.log("removing dropped cards");
-          this.removeCards({
+          this.deleteCards({
             columnType: this.grabber.requestData.columnType,
             column: this.grabber.requestData.column,
             row: this.grabber.requestData.row
           });
 
-          // testing game state validations
-          this.confirmEmptyBoard();
-          this.confirmPlayedCardCount();
-          this.confirmPlayedCardStacks();
 
           this.autoPlay();
         }
@@ -64,7 +60,7 @@ export class FreecellGame {
       }),
 
       // puts cards into the grabber (card remain in both places)
-      grabCards: action(function(grabData) {
+      dragCards: action(function(grabData) {
         // console.log("grab request: ", grabData);
         // useless assignments to help me know what's going on
         let columnType = grabData.columnType;
@@ -100,8 +96,8 @@ export class FreecellGame {
         return response;
       }),
 
-      // places cards from the grabber onto a column (cards remain in grabber and are not deleted from origin column)
-      placeCards: action(function(placeData) {
+      // places cards from the grabber onto a column - no validation (cards remain in grabber and are not deleted from origin column)
+      addCards: action(function(placeData) {
         // console.log("place request: ", placeData);
         // useless assignments to help me know what's going on
         let columnType = placeData.columnType;
@@ -139,8 +135,8 @@ export class FreecellGame {
         return response;
       }),
 
-      // removes cards from a column
-      removeCards: action(function(removeData) {
+      // removes cards from a column - no validation
+      deleteCards: action(function(removeData) {
         // useless assignments to help me know what's going on
         let columnType = removeData.columnType;
         let column = removeData.column;
@@ -176,9 +172,34 @@ export class FreecellGame {
         return response;
       }),
 
-      // will be for future game... requests done programmatically
+      // runs a move request, includes deleting from one row and adding to another - no validation
       moveCards: action(function(moveData) {
-        // does the whole damn thing, for future game purposes
+        const fromColumnType = moveData.fromColumnType;
+        const fromColumn = moveData.fromColumn;
+        const fromRow = moveData.fromRow;
+        const toColumnType = moveData.toColumnType;
+        const toColumn = moveData.toColumn;
+
+        this.dragCards({
+          columnType: fromColumnType,
+          column: fromColumn,
+          row: fromRow,
+        });
+
+        console.log("grabber: ", this.grabber);
+
+        this.addCards({
+          columnType: toColumnType,
+          column: toColumn,
+        });
+
+        this.deleteCards({
+          columnType: fromColumnType,
+          column: fromColumn,
+          row: fromRow,
+        });
+
+        this.clearGrabber();
       }),
 
       // clears cards from the grabber
@@ -186,10 +207,63 @@ export class FreecellGame {
         this.grabber.cards = [];
       }),
 
+      // Autoplay functions to avoid excessive clicking/dragging
+      autoPlay: action(function() {
+        // console.log("autoplaying");
+
+        // check freecells for playable cards
+        for (let i = 0; i < 4; i++) {
+          if (this.freeCells[i]) {
+            for (let j = 0; j < 4; j++) {
+              let dropTopCard = this.getTopCard(this.playedCards[j]);
+              let proposedStack = [...dropTopCard, this.freeCells[i]].filter((card) => card.constructor.name === "Card");
+              let checkCard = proposedStack[proposedStack.length-1];
+              if (checkCard.value <= this.getMaxAutoPlay(checkCard.color)) {
+                if (this.checkPlayStack(proposedStack)) {
+                  this.dragCards({
+                    columnType: "freeCell",
+                    column: i
+                  });
+                  this.dropCards({
+                    columnType: "played",
+                    column: j
+                  });
+                  i = j = 5;
+                }
+              }
+            }
+          }
+        }
+
+        // check main columns for playable cards
+        for (let i = 0; i < 8; i++) {
+          if (this.columns[i].length > 0) {
+            for (let j = 0; j < 4; j++) {
+              let dropTopCard = this.getTopCard(this.playedCards[j]);
+              let playCard = this.getTopCard(this.columns[i]);
+              let proposedStack = [...dropTopCard, ...playCard].filter((card) => card.constructor.name === "Card");
+              let checkCard = proposedStack[proposedStack.length-1];
+              if (checkCard.value <= this.getMaxAutoPlay(checkCard.color)) {
+                if (this.checkPlayStack(proposedStack)) {
+                  this.dragCards({
+                    columnType: "column",
+                    column: i,
+                    row: this.columns[i].length-1
+                  });
+                  this.dropCards({
+                    columnType: "played",
+                    column: j
+                  });
+                  i = j = 9;
+                }
+              }
+            }
+          }
+        }
+      }),
+
       // win condition checks
       confirmEmptyBoard: function() {
-        const emptyColumnCount = this.countEmptyColumns();
-        const emptyFreeCellCount = this.countEmptyCells();
         if (this.countEmptyCells() === 4 && this.countEmptyColumns() === 8) {
           console.log("winner winner: board empty");
         } else {
@@ -356,61 +430,6 @@ export class FreecellGame {
           return 2;
         }
       },
-
-      // Autoplay functions to avoid excessive clicking/dragging
-      autoPlay: action(function() {
-        // console.log("autoplaying");
-
-        // check freecells for playable cards
-        for (let i = 0; i < 4; i++) {
-          if (this.freeCells[i]) {
-            for (let j = 0; j < 4; j++) {
-              let dropTopCard = this.getTopCard(this.playedCards[j]);
-              let proposedStack = [...dropTopCard, this.freeCells[i]].filter((card) => card.constructor.name === "Card");
-              let checkCard = proposedStack[proposedStack.length-1];
-              if (checkCard.value <= this.getMaxAutoPlay(checkCard.color)) {
-                if (this.checkPlayStack(proposedStack)) {
-                  this.grabCards({
-                    columnType: "freeCell",
-                    column: i
-                  });
-                  this.dropCards({
-                    columnType: "played",
-                    column: j
-                  });
-                  i = j = 5;
-                }
-              }
-            }
-          }
-        }
-
-        // check main columns for playable cards
-        for (let i = 0; i < 8; i++) {
-          if (this.columns[i].length > 0) {
-            for (let j = 0; j < 4; j++) {
-              let dropTopCard = this.getTopCard(this.playedCards[j]);
-              let playCard = this.getTopCard(this.columns[i]);
-              let proposedStack = [...dropTopCard, ...playCard].filter((card) => card.constructor.name === "Card");
-              let checkCard = proposedStack[proposedStack.length-1];
-              if (checkCard.value <= this.getMaxAutoPlay(checkCard.color)) {
-                if (this.checkPlayStack(proposedStack)) {
-                  this.grabCards({
-                    columnType: "column",
-                    column: i,
-                    row: this.columns[i].length-1
-                  });
-                  this.dropCards({
-                    columnType: "played",
-                    column: j
-                  });
-                  i = j = 9;
-                }
-              }
-            }
-          }
-        }
-      }),
 
       // log current gamestate as a json string, to make building levels easier
       exportGameState: function() {
