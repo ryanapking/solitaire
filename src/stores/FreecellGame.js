@@ -48,6 +48,11 @@ export class FreecellGame {
             row: this.grabber.requestData.row
           });
 
+          // testing game state validations
+          this.confirmEmptyBoard();
+          this.confirmPlayedCardCount();
+          this.confirmPlayedCardStacks();
+
           this.autoPlay();
         }
 
@@ -181,6 +186,43 @@ export class FreecellGame {
         this.grabber.cards = [];
       }),
 
+      // win condition checks
+      confirmEmptyBoard: function() {
+        const emptyColumnCount = this.countEmptyColumns();
+        const emptyFreeCellCount = this.countEmptyCells();
+        if (this.countEmptyCells() === 4 && this.countEmptyColumns() === 8) {
+          console.log("winner winner: board empty");
+        } else {
+          console.log("nope nope: board not yet empty");
+        }
+      },
+
+      confirmPlayedCardCount: function() {
+        const reducer = (accumulator, currentStack) => accumulator + currentStack.length;
+        const totalPlayedCards = this.playedCards.reduce(reducer, 0);
+
+        if (totalPlayedCards === 52) {
+          console.log("winner winner: 52 cards played");
+        } else {
+          console.log("nope nope: 52 cards not yet played");
+        }
+      },
+
+      confirmPlayedCardStacks: function() {
+        const results = this.playedCards.map((playedCardStack, index) => {
+          let valid = true;
+          if (playedCardStack.length !== 13) valid = false;
+          if (valid && playedCardStack[0].value !== 1) valid = false;
+          if (valid && !this.checkPlayStack(playedCardStack)) valid = false;
+          return valid;
+        });
+        if (results.includes(false)) {
+          console.log("nope nope: stacks not fully valid");
+        } else {
+          console.log("winner winner: stacks completely validated");
+        }
+      },
+
       // helper functions
       validateDrop: function(dropData) {
         // confirms that a drop meets the freecells rules
@@ -229,17 +271,24 @@ export class FreecellGame {
       },
 
       checkPlayStack: function(stack) {
-        // checks if this is the first card played, and if it's an ace
-        if ( stack.length === 1 ) {
-          if (stack[0].value === 1 ) {
-            return true;
-          }
-        // check if the suits match and the cars have incremented by one
-        } else if (stack[0].suit === stack[1].suit && stack[0].value - stack[1].value === -1) {
-            return true;
+        // if stack is one card and it's an ace, we are done
+        if (stack.length === 1) {
+          if (stack[0].value === 1) {
+            return true
           } else {
-            return false;
+            return false
+          };
+        }
+
+        let valid = true;
+        stack.forEach((currentCard, currentIndex) => {
+          const previousCard = (currentIndex > 0) ? stack[currentIndex-1] : null;
+          if (previousCard && (currentCard.suit !== previousCard.suit || currentCard.value - previousCard.value !== 1)) {
+            valid = false;
           }
+        });
+
+        return valid;
       },
 
       checkCardStack: function(stack) {
