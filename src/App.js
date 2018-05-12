@@ -3,7 +3,7 @@ import { Provider, observer } from 'mobx-react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
-import './App.css';
+import './css/App.css';
 
 import Console from './components/Console';
 import CustomDragLayer from './components/CustomDragLayer';
