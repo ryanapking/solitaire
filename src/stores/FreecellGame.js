@@ -213,11 +213,10 @@ export class FreecellGame {
 
         // check freecells for playable cards
         for (let i = 0; i < 4; i++) {
-          if (this.freeCells[i]) {
+          const checkCard = this.freeCells[i];
+          if (checkCard) {
             for (let j = 0; j < 4; j++) {
-              let dropTopCard = this.getTopCard(this.playedCards[j]);
-              let proposedStack = [...dropTopCard, this.freeCells[i]].filter((card) => card.constructor.name === "Card");
-              let checkCard = proposedStack[proposedStack.length-1];
+              const proposedStack = [...this.playedCards[j], checkCard];
               if (checkCard.value <= this.getMaxAutoPlay(checkCard.color)) {
                 if (this.checkPlayStack(proposedStack)) {
                   this.dragCards({
@@ -237,13 +236,11 @@ export class FreecellGame {
 
         // check main columns for playable cards
         for (let i = 0; i < 8; i++) {
-          if (this.columns[i].length > 0) {
+          const checkCard = this.getTopCard(this.columns[i]);
+          if (checkCard) {
             for (let j = 0; j < 4; j++) {
-              let dropTopCard = this.getTopCard(this.playedCards[j]);
-              let playCard = this.getTopCard(this.columns[i]);
-              let proposedStack = [...dropTopCard, ...playCard].filter((card) => card.constructor.name === "Card");
-              let checkCard = proposedStack[proposedStack.length-1];
-              if (checkCard.value <= this.getMaxAutoPlay(checkCard.color)) {
+              let proposedStack = [...this.playedCards[j], ...checkCard];
+              if (checkCard[0].value <= this.getMaxAutoPlay(checkCard.color)) {
                 if (this.checkPlayStack(proposedStack)) {
                   this.dragCards({
                     columnType: "column",
