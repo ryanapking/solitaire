@@ -238,7 +238,9 @@ export class FreecellGame {
         for (let i = 0; i < 8; i++) {
           const topCardArray = this.getTopCard(this.columns[i]);
           const checkCard = (topCardArray.length > 0) ? topCardArray[0] : null;
-          if (checkCard) {
+          console.log("top card array: ", topCardArray);
+          console.log("check card: ", checkCard);
+          if (checkCard !== null) {
             for (let j = 0; j < 4; j++) {
               let proposedStack = [...this.playedCards[j], checkCard];
               if (checkCard.value <= this.getMaxAutoPlay(checkCard.color)) {
