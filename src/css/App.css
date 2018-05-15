@@ -11,7 +11,7 @@ html {
 
 .history {
   width: 100%;
-  height: 100px;
+  /* height: 100px; */
   background-color: lightgray;
 }
 
@@ -19,6 +19,11 @@ html {
   width: 100%;
   height: 300px;
   background-color: lightgray;
+}
+
+.console .history .CodeMirror {
+  height: auto;
+  max-height: 200px;
 }
 
 /* Freecell Game Styles */

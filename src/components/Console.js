@@ -5,22 +5,31 @@ import {Controlled as CodeMirror} from 'react-codemirror2'
 
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/dracula.css';
+import 'codemirror/theme/duotone-light.css'
 
 class FreeCell extends Component {
   render() {
     const { store } = this.props;
 
-    const codemirrorOptions = {
+    const consoleOptions = {
       mode: 'javascript',
-      theme: 'dracula',
+      theme: 'duotone-light',
       lineNumbers: true,
     };
 
+    const historyOptions = {
+      mode: 'javascript',
+      theme: 'duotone-light',
+      lineNumbers: true,
+    }
+
     return (
       <div className="console">
-        <textarea className="history"value={store.consoleHistory} />
-        <CodeMirror value={store.consoleCommand} options={codemirrorOptions}
+        {store.consoleHistory
+          ? <CodeMirror className="history" value={store.consoleHistory} options={historyOptions} />
+          : null
+        }
+        <CodeMirror className="current" value={store.consoleCommand} options={consoleOptions}
           onBeforeChange={(editor, data, value) => {
             this.handleConsoleChange(value);
           }}
