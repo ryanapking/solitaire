@@ -236,11 +236,12 @@ export class FreecellGame {
 
         // check main columns for playable cards
         for (let i = 0; i < 8; i++) {
-          const checkCard = this.getTopCard(this.columns[i]);
+          const topCardArray = this.getTopCard(this.columns[i]);
+          const checkCard = (topCardArray.length > 0) ? topCardArray[0] : null;
           if (checkCard) {
             for (let j = 0; j < 4; j++) {
-              let proposedStack = [...this.playedCards[j], ...checkCard];
-              if (checkCard[0].value <= this.getMaxAutoPlay(checkCard.color)) {
+              let proposedStack = [...this.playedCards[j], checkCard];
+              if (checkCard.value <= this.getMaxAutoPlay(checkCard.color)) {
                 if (this.checkPlayStack(proposedStack)) {
                   this.dragCards({
                     columnType: "column",
