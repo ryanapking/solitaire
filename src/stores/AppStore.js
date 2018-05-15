@@ -15,7 +15,11 @@ class AppStore {
       commandParser: new CommandParser(), // replaced on initial level switch
       runConsoleCommands: action(function() {
         // add the command to the history as typed in by the user
-        this.consoleHistory += this.consoleCommand + "\n";
+        if (this.consoleHistory) {
+          this.consoleHistory += "\n" + this.consoleCommand;
+        } else {
+          this.consoleHistory = this.consoleCommand;
+        }
         // calls the command parser
         let parseResults = this.commandParser.parseCommands(this.consoleCommand);
 
