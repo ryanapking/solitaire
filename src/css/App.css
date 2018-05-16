@@ -2,6 +2,45 @@ html {
   background-color: #076324;
 }
 
+/* Overlay styles */
+
+.messageOverlay {
+  transition-duration: 1s;
+  z-index: 5;
+  position: fixed;
+  top: 100%;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  background: lightgray;
+}
+
+.messageOverlay .content {
+  height: 100%;
+  width: 100%;
+}
+
+.messageOverlay .activate-tab {
+  transition-duration: 1s;
+  background: gray;
+  position: absolute;
+  height: 50px;
+  top: -50px;
+  right: 25px;
+}
+
+.messageOverlay .activate-tab:hover {
+  cursor: pointer;
+}
+
+.messageOverlay.visible {
+  top: 0;
+}
+
+.messageOverlay.visible .activate-tab {
+  top: 0;
+}
+
 /* Console styles */
 
 .console {

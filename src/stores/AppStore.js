@@ -8,6 +8,7 @@ class AppStore {
   constructor() {
     extendObservable(this, {
       // used to draw the board
+      showDocs: false,
       levelManager: new LevelManager(),
       consoleCommand: "",
       consoleHistory: "",

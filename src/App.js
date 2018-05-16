@@ -8,6 +8,8 @@ import './css/App.css';
 import Console from './components/Console';
 import CustomDragLayer from './components/CustomDragLayer';
 import GameSection from './components/GameSection';
+import MessageOverlay from './components/MessageOverlay';
+
 
 import AppStore from './stores/AppStore'
 
@@ -20,10 +22,15 @@ class App extends Component {
 
     return (
       <Provider store={AppStore}>
-        <div className="App" style={appStyles}>
-          <CustomDragLayer />
-          <GameSection />
-          <Console/>
+        <div className="App">
+          <div className="game" style={appStyles}>
+            <CustomDragLayer />
+            <GameSection />
+            <Console/>
+          </div>
+          <div className="overlays">
+            <MessageOverlay />
+          </div>
         </div>
       </Provider>
     );
