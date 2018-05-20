@@ -8,12 +8,16 @@ class AppStore {
   constructor() {
     extendObservable(this, {
       // used to draw the board
-      showDocs: false,
+      showDocs: true,
       levelManager: new LevelManager(),
       consoleCommand: "",
       consoleHistory: "",
       game: new FreecellGame(), // replaced on initial level switch
       commandParser: new CommandParser(), // replaced on initial level switch
+      toggleDocs: action(function() {
+        this.showDocs = !this.showDocs;
+      }),
+
       runConsoleCommands: action(function() {
         // add the command to the history as typed in by the user
         if (this.consoleHistory) {

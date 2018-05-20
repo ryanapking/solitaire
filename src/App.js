@@ -8,7 +8,7 @@ import './css/App.css';
 import Console from './components/Console';
 import CustomDragLayer from './components/CustomDragLayer';
 import GameSection from './components/GameSection';
-import MessageOverlay from './components/MessageOverlay';
+import Documentation from './components/Documentation';
 
 
 import AppStore from './stores/AppStore'
@@ -29,7 +29,7 @@ class App extends Component {
             <Console/>
           </div>
           <div className="overlays">
-            <MessageOverlay />
+            <Documentation />
           </div>
         </div>
       </Provider>

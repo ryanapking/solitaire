@@ -1,6 +1,6 @@
 import cardImages from '../images/cardImages';
 import { CLUB, SPADE, DIAMOND, HEART, RED, BLACK } from './constants';
-import gameLevels from './gameLevels';
+import gameLevels from './data/gameLevels';
 
 class Card {
   constructor(suit, value, displayValue, image = null) {

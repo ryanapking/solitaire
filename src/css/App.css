@@ -2,9 +2,9 @@ html {
   background-color: #076324;
 }
 
-/* Overlay styles */
+/* General Overlay styles */
 
-.messageOverlay {
+.overlay {
   transition-duration: 1s;
   z-index: 5;
   position: fixed;
@@ -15,12 +15,12 @@ html {
   background: lightgray;
 }
 
-.messageOverlay .content {
+.overlay .content {
   height: 100%;
   width: 100%;
 }
 
-.messageOverlay .activate-tab {
+.overlay .activate-tab {
   transition-duration: 1s;
   background: gray;
   position: absolute;
@@ -29,16 +29,26 @@ html {
   right: 25px;
 }
 
-.messageOverlay .activate-tab:hover {
+.overlay .activate-tab:hover {
   cursor: pointer;
 }
 
-.messageOverlay.visible {
+.overlay.visible {
   top: 0;
 }
 
-.messageOverlay.visible .activate-tab {
+.overlay.visible .activate-tab {
   top: 0;
+}
+
+/* Documentation Styles */
+
+.documentation .content {
+  margin: 25px;
+}
+
+.example .CodeMirror{
+  height: auto;
 }
 
 /* Console styles */

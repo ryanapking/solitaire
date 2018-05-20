@@ -349,7 +349,7 @@ export class FreecellGame {
             return true
           } else {
             return false
-          };
+          }
         }
 
         let valid = true;

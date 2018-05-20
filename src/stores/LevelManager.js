@@ -1,4 +1,4 @@
-import gameLevels from './gameLevels';
+import gameLevels from './data/gameLevels';
 
 class Level {
   constructor(levelData) {
@@ -6,8 +6,7 @@ class Level {
     this.winConditions = levelData.winConditions;
     this.gameCheckConditions = levelData.gameCheckConditions;
     this.availableMethods = levelData.availableMethods;
-    this.documentedMethods = levelData.documentedMethods;
-    // freecell level states are managed elsewhere?
+    this.documentation = levelData.documentation;
   }
 }
 
