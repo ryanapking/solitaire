@@ -3,10 +3,12 @@ import { FreecellHand } from './FreecellHand';
 import { RED, BLACK } from './constants';
 
 export class FreecellGame {
-  constructor(level = 1) {
+  constructor(level = 1, winConditions = []) {
     let hand = new FreecellHand(level);
     extendObservable(this, {
       // used to draw the board
+      gameWon: false,
+      winConditions: winConditions,
       columns: hand.columns,
       freeCells: hand.freeCells,
       playedCards: hand.playedCards,
@@ -73,7 +75,7 @@ export class FreecellGame {
           message: "Grab success. Probably.",
           requestData: grabData,
           cards: []
-        }
+        };
 
         switch(columnType) {
           case "column": {
@@ -122,6 +124,7 @@ export class FreecellGame {
           case "played": {
             this.playedCards[column] = [...this.playedCards[column], ...this.grabber.cards];
             this.setMaxAutoPlay();
+            this.checkWinConditions();
             break;
           }
           default: {
@@ -260,27 +263,42 @@ export class FreecellGame {
         }
       }),
 
+      checkWinConditions: action(function() {
+        let gameWon = true;
+        this.winConditions.forEach((winCondition) => {
+          gameWon = gameWon ? this[winCondition]() : gameWon;
+        });
+        console.log("gameWon: ", gameWon);
+      }),
+
       // win condition checks
       confirmEmptyBoard: function() {
+        console.log("checking for empty game board");
         if (this.countEmptyCells() === 4 && this.countEmptyColumns() === 8) {
-          console.log("winner winner: board empty");
+          console.log("yep: board empty");
+          return true;
         } else {
-          console.log("nope nope: board not yet empty");
+          console.log("nope: board not yet empty");
+          return false;
         }
       },
 
       confirmPlayedCardCount: function() {
+        console.log("checking that 52 cards have been played");
         const reducer = (accumulator, currentStack) => accumulator + currentStack.length;
         const totalPlayedCards = this.playedCards.reduce(reducer, 0);
 
         if (totalPlayedCards === 52) {
-          console.log("winner winner: 52 cards played");
+          console.log("yep: 52 cards played");
+          return true;
         } else {
-          console.log("nope nope: 52 cards not yet played");
+          console.log("nope: 52 cards not yet played");
+          return false;
         }
       },
 
       confirmPlayedCardStacks: function() {
+        console.log("validating played card stacks");
         const results = this.playedCards.map((playedCardStack, index) => {
           let valid = true;
           if (playedCardStack.length !== 13) valid = false;
@@ -289,9 +307,11 @@ export class FreecellGame {
           return valid;
         });
         if (results.includes(false)) {
-          console.log("nope nope: stacks not fully valid");
+          console.log("nope: stacks not fully valid");
+          return false;
         } else {
-          console.log("winner winner: stacks completely validated");
+          console.log("yep: stacks completely validated");
+          return true;
         }
       },
 
@@ -452,5 +472,6 @@ export class FreecellGame {
       },
 
     })
+
   }
 }

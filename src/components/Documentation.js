@@ -18,7 +18,7 @@ class Documentation extends Component {
 
     return (
       <div className={classNames.join(' ')}>
-        <div className="activate-tab" onClick={() => store.toggleDocs()}>hi there</div>
+        <div className="activate-tab" onClick={() => store.toggleDocs()}>DOCS</div>
         <div className="content">
           {store.levelManager.currentLevel.documentation.map((docs, index) =>
             <div className="method" key={index}>
@@ -34,7 +34,6 @@ class Documentation extends Component {
                   </div>
                 )}
               </div>
-              <label>Example:</label>
               <CodeMirror className="example" value={docs.example} options={exampleOptions} />
             </div>
           )}

@@ -18,6 +18,7 @@ html {
 .overlay .content {
   height: 100%;
   width: 100%;
+  overflow: scroll;
 }
 
 .overlay .activate-tab {

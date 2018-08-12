@@ -8,7 +8,7 @@ class AppStore {
   constructor() {
     extendObservable(this, {
       // used to draw the board
-      showDocs: true,
+      showDocs: false,
       levelManager: new LevelManager(),
       consoleCommand: "",
       consoleHistory: "",
@@ -61,7 +61,7 @@ class AppStore {
       switchLevels: action(function(level) {
         // create new objects with updated level data, or find some other way to manage this
         this.levelManager.setCurrentLevel(level);
-        this.game = new FreecellGame(level);
+        this.game = new FreecellGame(level, this.levelManager.currentLevel.winConditions);
         this.commandParser = new CommandParser(this.levelManager.currentLevel.availableMethods);
       }),
 
