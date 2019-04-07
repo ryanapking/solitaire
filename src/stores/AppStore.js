@@ -45,6 +45,7 @@ class AppStore {
           // most functions are in the freecell game class, but this one makes more sense here
           // because it affects the available commands as well as the freecell game state
           // could be moved to the parser somehow?
+          console.log('command:', command);
           if (command.method === "switchLevels") {
             this[command.method](command.data.level);
           } else {

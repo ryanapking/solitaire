@@ -1,4 +1,22 @@
 export default {
+  why: {
+    method: "What is this thing?",
+    description: "It's freecell solitaire! The rules are the same as Windows freecell, but without all the pretty animations.",
+    params: [],
+  },
+
+  reallyWhy: {
+    method: "Why does it exist?",
+    description: "The short answer is that I wanted to experiment with MobX and React. I liked the idea of MobX's object oriented approach, and needed to build something with it.",
+    params: [],
+  },
+
+  reallyReallyWhy: {
+    method: "What's that big box next to all the cards?",
+    description: "It's a terminal, of sorts. But like, a fake one, that will only run the commands I want it to run. Yeah, I had a big idea to make this into a game. I had built out all the pieces I would need to create my game, which turned into something far more complex than it ever needed to be, when I realized that I was the only person in the world with the both an undying love of freecell solitaire and interest in documentation. I doubt anybody else would have thought it was a game at all. If you're really curious, the commands you could have run are documented below... kind of. It's probably best if we just think of it as solitaire with a big box beside it.",
+    params: [],
+  },
+
   autoPlay: {
     method: "autoPlay",
     description: "Runs the autoplay function, which plays all possible cards.",
@@ -118,7 +136,7 @@ export default {
         description: "The number of the level you'd like to switch to"
       }
     ],
-    example: "switchLevels(2);",
+    example: 'switchLevels({ \n "level": "2" \n });',
   },
 
   checkWinConditions: {

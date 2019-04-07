@@ -34,7 +34,7 @@ class FreeCell extends Component {
             this.handleConsoleChange(value);
           }}
         />
-        <button className="submit" onClick={this.submitCommand.bind(this)}>Run That Shit</button>
+        <button className="submit" onClick={this.submitCommand.bind(this)}>Run Command</button>
       </div>
     );
   }
