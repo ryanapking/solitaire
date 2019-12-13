@@ -6,7 +6,7 @@
     "codemirror": "^5.37.0",
     "mobx": "^3.6.2",
     "mobx-react": "^4.4.3",
-    "npm": "^5.10.0",
+    "npm": "^6.13.4",
     "react": "^16.3.2",
     "react-codemirror2": "^5.0.1",
     "react-dnd": "^2.6.0",
